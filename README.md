@@ -1,100 +1,137 @@
-# vinext-starter
+# Pi Gamma Omicron Fraternity
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+The official digital experience and private operating portal for Pi Gamma
+Omicron, founded at The Ohio State University in 1905.
 
-## Prerequisites
+The project combines a cinematic public history experience with a role-based
+members area for announcements, member administration, interest submissions,
+and fraternal discussion.
 
-- Node.js `>=22.13.0`
+## Live site
 
-## Quick Start
+[pi-gamma-omicron-1905.atlankinlogs.chatgpt.site](https://pi-gamma-omicron-1905.atlankinlogs.chatgpt.site/)
 
-```bash
-npm install
+## Requirements
+
+- Node.js 22.13 or newer
+- npm 10 or newer
+- Git
+
+Check your installed versions:
+
+```powershell
+node --version
+npm --version
+git --version
+```
+
+## Run the site locally
+
+Open PowerShell in the project folder and run:
+
+```powershell
+npm ci
 npm run dev
-npm run build
 ```
 
-This starter does not use `wrangler.jsonc`.
+Then open [http://localhost:3000](http://localhost:3000).
 
-## Included Shape
+The first installation may take a few minutes. Keep the PowerShell window open
+while presenting the site. Stop the server with `Ctrl+C` when finished.
 
-- edit site code under `app/`
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+### Local members-area access
 
-## Workspace Auth Headers
+Local development automatically creates a safe preview administrator account.
+Open [http://localhost:3000/members](http://localhost:3000/members) to demo:
 
-Signed-in visitors receive both `oai-authenticated-user-id` and `oai-authenticated-user-email`. Private Sites require every visitor to sign in; public Sites may also have anonymous visitors, for whom neither header is present.
+- the member dashboard;
+- announcements;
+- the fraternal directory;
+- the Brotherhood Board; and
+- member and applicant administration.
 
-The user ID is stable for the same user on the same Site and different across Sites. Email and name are intended for display or contact purposes.
+Local demo records are stored in the ignored `.wrangler` development folder.
+They do not change production data. The automatic preview administrator is
+disabled in production.
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
-`oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
+## Suggested live-demo route
 
-Treat the full name as optional and fall back to email when it is absent:
+1. Start at the homepage and let the opening sequence complete.
+2. Scroll through the 1905 founding story and historical record.
+3. Show the renewal scene, chapters, pillars, and leadership.
+4. Open `/join` to show the interest experience.
+5. Open `/members` and demonstrate administration, announcements, and the
+   Brotherhood Board.
 
-```tsx
-import { headers } from "next/headers";
+## Verify before presenting
 
-export default async function Home() {
-  const requestHeaders = await headers();
-  const userId = requestHeaders.get("oai-authenticated-user-id");
-  const email = requestHeaders.get("oai-authenticated-user-email");
-  const encodedFullName = requestHeaders.get("oai-authenticated-user-full-name");
-  const fullName =
-    encodedFullName &&
-    requestHeaders.get("oai-authenticated-user-full-name-encoding") ===
-      "percent-encoded-utf-8"
-      ? decodeURIComponent(encodedFullName)
-      : null;
-
-  const displayName = fullName ?? email;
-  // ...
-}
+```powershell
+npm run lint
+npm test
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+`npm test` creates a production build and verifies the public and protected
+routes.
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+## Create the GitHub repository
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- Use `chatGPTSignInPath(returnTo)` and `chatGPTSignOutPath(returnTo)` for
-  browser links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+Create a new **private** repository on GitHub named
+`pi-gamma-omicron-1905`. Leave it empty: do not add a README, `.gitignore`, or
+license on GitHub.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+Then run these commands from this project folder, replacing `YOUR-USERNAME`:
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+```powershell
+git remote add origin https://github.com/YOUR-USERNAME/pi-gamma-omicron-1905.git
+git push -u origin main
+```
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+If GitHub asks you to authenticate, complete its browser sign-in and repeat the
+push command.
 
-## Useful Commands
+## Clone it onto another computer
 
-- `npm run dev`: start local development
-- `npm run build`: verify the vinext build output
-- `npm test`: build the starter and verify its rendered loading skeleton
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+```powershell
+git clone https://github.com/YOUR-USERNAME/pi-gamma-omicron-1905.git
+cd pi-gamma-omicron-1905
+npm ci
+npm run dev
+```
 
-## Learn More
+## Useful commands
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the live local development server |
+| `npm run lint` | Check source quality |
+| `npm run build` | Create a production build |
+| `npm test` | Build and verify key routes |
+| `npm run db:generate` | Generate a migration after database schema changes |
+
+## Architecture
+
+- Vinext, React 19, and TypeScript
+- Cloudflare Workers-compatible server output
+- Drizzle ORM with Cloudflare D1 persistence
+- Sign in with ChatGPT for the hosted members area
+- Role-based access for super administrators, national officers, chapter
+  officers, brothers, alumni, and applicants
+
+This project is not currently wired to Supabase. Local development uses a
+project-local D1 simulation, while the hosted site uses its managed Cloudflare
+D1 database.
+
+## Important files
+
+- `app/page.tsx` — public homepage content
+- `app/components/LegacyExperience.tsx` — cinematic scroll experience
+- `app/members/` — protected member portal
+- `app/api/` — interest, member, announcement, and discussion APIs
+- `db/schema.ts` — persistent data model
+- `app/globals.css` — visual system and responsive behavior
+
+## Privacy
+
+Do not commit `.env` files, private credentials, exported member data, or
+applicant information. The repository's `.gitignore` already excludes local
+environment files, build output, dependencies, and local database state.
