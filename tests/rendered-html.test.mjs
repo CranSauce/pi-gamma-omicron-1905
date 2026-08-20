@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render(pathname = "/") {
@@ -54,4 +54,29 @@ test("keeps scroll motion progressive and accessible", async () => {
   assert.match(css, /\.legacy-experience__stage\s*\{[\s\S]*position:\s*sticky/);
   assert.match(css, /animation-timeline:\s*view\(\)/);
   assert.match(page, /<LegacyExperience\s*\/>/);
+});
+
+test("keeps every public and protected portal destination routed", async () => {
+  const publicRoutes = ["/", "/history", "/chapters", "/join", "/privacy"];
+  const protectedRouteFiles = [
+    "../app/members/page.tsx",
+    "../app/members/announcements/page.tsx",
+    "../app/members/directory/page.tsx",
+    "../app/members/discuss/page.tsx",
+    "../app/members/discuss/[threadId]/page.tsx",
+    "../app/members/admin/page.tsx",
+  ];
+
+  for (const pathname of publicRoutes) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200, `${pathname} should render publicly`);
+  }
+
+  await Promise.all(protectedRouteFiles.map((pathname) => access(new URL(pathname, import.meta.url))));
+
+  const portalSource = await readFile(new URL("../app/members/components/PortalShell.tsx", import.meta.url), "utf8");
+  assert.match(portalSource, /href="\/members\/announcements"/);
+  assert.match(portalSource, /href="\/members\/directory"/);
+  assert.match(portalSource, /href="\/members\/discuss"/);
+  assert.match(portalSource, /href="\/members\/admin"/);
 });

@@ -1,8 +1,17 @@
-import { eq } from "drizzle-orm";
+import Link from "next/link";
+import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../db";
-import { members } from "../../db/schema";
+import { announcements, discussionThreads, interests, members } from "../../db/schema";
+import {
+  canManageMembers,
+  canPublishAnnouncements,
+  canUseDiscussionBoard,
+  canUseFraternalDirectory,
+  findMemberByEmail,
+} from "../../lib/member-access";
 import { chatGPTSignOutPath, requireChatGPTUser } from "../chatgpt-auth";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
+import { PortalShell } from "./components/PortalShell";
 
 export const dynamic = "force-dynamic";
 
@@ -17,62 +26,161 @@ async function MemberPortal() {
   let member: typeof members.$inferSelect | undefined;
 
   try {
-    const db = getDb();
-    [member] = await db
-      .select()
-      .from(members)
-      .where(eq(members.email, user.email.toLowerCase()))
-      .limit(1);
+    member = await findMemberByEmail(user.email);
   } catch {
     member = undefined;
   }
 
   if (!member?.active) {
     return (
-      <section className="access-pending">
-        <p className="section-label">Authenticated · authorization pending</p>
-        <h1>Member access has not been approved for this account.</h1>
-        <p>
-          You are signed in as <strong>{user.email}</strong>. A national officer must add this address to the active member directory before private fraternity materials become visible.
-        </p>
-        <div>
-          <a className="button button--scarlet" href="/join">Contact through interest form</a>
-          <a className="text-link text-link--light" href={chatGPTSignOutPath("/")}>Sign out</a>
-        </div>
-      </section>
+      <main className="interior interior--dark">
+        <SiteHeader />
+        <section className="access-pending">
+          <p className="section-label">Authenticated · authorization pending</p>
+          <h1>Member access has not been approved for this account.</h1>
+          <p>
+            You are signed in as <strong>{user.email}</strong>. A national officer must add this address to the active member directory before private fraternity materials become visible.
+          </p>
+          <div>
+            <a className="button button--scarlet" href="/join">Contact through interest form</a>
+            <a className="text-link text-link--light" href={chatGPTSignOutPath("/")}>Sign out</a>
+          </div>
+        </section>
+        <SiteFooter />
+      </main>
     );
   }
 
+  const db = getDb();
+  const announcementAudiences = ["all"];
+  if (canPublishAnnouncements(member.role)) announcementAudiences.push("officers");
+  if (member.chapter) announcementAudiences.push(`chapter:${member.chapter}`);
+  const [memberTotalResult, announcementRows, discussionRows, openInterestResult] = await Promise.all([
+    db.select({ value: count() }).from(members).where(eq(members.active, true)),
+    db
+      .select({
+        id: announcements.id,
+        title: announcements.title,
+        body: announcements.body,
+        audience: announcements.audience,
+        createdAt: announcements.createdAt,
+        author: members.fullName,
+      })
+      .from(announcements)
+      .leftJoin(members, eq(announcements.authorMemberId, members.id))
+      .where(and(eq(announcements.published, true), inArray(announcements.audience, announcementAudiences)))
+      .orderBy(desc(announcements.createdAt))
+      .limit(3),
+    db
+      .select({
+        id: discussionThreads.id,
+        title: discussionThreads.title,
+        category: discussionThreads.category,
+        createdAt: discussionThreads.createdAt,
+        author: members.fullName,
+      })
+      .from(discussionThreads)
+      .leftJoin(members, eq(discussionThreads.authorMemberId, members.id))
+      .orderBy(desc(discussionThreads.pinned), desc(discussionThreads.updatedAt))
+      .limit(4),
+    canManageMembers(member.role)
+      ? db.select({ value: count() }).from(interests).where(eq(interests.status, "new"))
+      : Promise.resolve([{ value: 0 }]),
+  ]);
+
   return (
-    <section className="member-dashboard">
-      <header>
+    <PortalShell member={member} active="home">
+      <header className="portal-page-header">
         <div>
           <p className="section-label">Members’ portal</p>
-          <h1>Welcome, {member.fullName}.</h1>
+          <h1>Welcome back,<br />{member.fullName.split(" ")[0]}.</h1>
         </div>
-        <a className="text-link text-link--light" href={chatGPTSignOutPath("/")}>Sign out</a>
+        <p>
+          A private operating space for the work of brotherhood—communications, directory, discussion, and organizational stewardship.
+        </p>
       </header>
-      <div className="member-dashboard__identity">
-        <span>{member.role.replaceAll("_", " ")}</span>
-        <strong>{member.chapter || "National"}</strong>
+
+      <section className="portal-metrics" aria-label="Portal summary">
+        <article><span>Active directory</span><strong>{memberTotalResult[0]?.value ?? 0}</strong><small>Authorized accounts</small></article>
+        <article><span>Announcements</span><strong>{announcementRows.length}</strong><small>Most recent notices</small></article>
+        <article><span>Board activity</span><strong>{discussionRows.length}</strong><small>Recent conversations</small></article>
+        {canManageMembers(member.role) && (
+          <article><span>Interest queue</span><strong>{openInterestResult[0]?.value ?? 0}</strong><small>Awaiting review</small></article>
+        )}
+      </section>
+
+      <div className="portal-dashboard-grid">
+        <section className="portal-panel portal-panel--wide" aria-labelledby="dashboard-announcements">
+          <div className="portal-panel__heading">
+            <div><span>01</span><h2 id="dashboard-announcements">Latest announcements</h2></div>
+            <Link href="/members/announcements">View all</Link>
+          </div>
+          {announcementRows.length ? (
+            <div className="announcement-list announcement-list--compact">
+              {announcementRows.map((announcement) => (
+                <article key={announcement.id}>
+                  <p><span>{announcement.audience}</span><time>{formatDate(announcement.createdAt)}</time></p>
+                  <h3>{announcement.title}</h3>
+                  <p>{announcement.body}</p>
+                  <small>Posted by {announcement.author || "Fraternity leadership"}</small>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <EmptyPortalState title="No announcements yet" body="Officer communications will appear here as the portal comes online." />
+          )}
+        </section>
+
+        {canUseDiscussionBoard(member.role) && (
+          <section className="portal-panel" aria-labelledby="dashboard-discussions">
+            <div className="portal-panel__heading">
+              <div><span>02</span><h2 id="dashboard-discussions">Brotherhood board</h2></div>
+              <Link href="/members/discuss">Open board</Link>
+            </div>
+            {discussionRows.length ? (
+              <div className="discussion-list discussion-list--compact">
+                {discussionRows.map((thread) => (
+                  <Link href={`/members/discuss/${thread.id}`} key={thread.id}>
+                    <span>{thread.category}</span>
+                    <strong>{thread.title}</strong>
+                    <small>{thread.author || "Member"} · {formatDate(thread.createdAt)}</small>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <EmptyPortalState title="The board is ready" body="Start the first private conversation with the brotherhood." />
+            )}
+          </section>
+        )}
+
+        <section className="portal-panel" aria-labelledby="dashboard-actions">
+          <div className="portal-panel__heading">
+            <div><span>03</span><h2 id="dashboard-actions">Your access</h2></div>
+          </div>
+          <div className="portal-quick-links">
+            <Link href="/members/announcements"><span>Officer notices</span><strong>Read announcements</strong></Link>
+            {canUseFraternalDirectory(member.role) && <Link href="/members/directory"><span>Active membership</span><strong>Open directory</strong></Link>}
+            {canManageMembers(member.role) && <Link href="/members/admin"><span>National operations</span><strong>Manage members</strong></Link>}
+          </div>
+        </section>
       </div>
-      <div className="member-dashboard__grid">
-        <article><span>01</span><h2>Announcements</h2><p>Officer communications and current fraternity notices will appear here.</p></article>
-        <article><span>02</span><h2>Calendar</h2><p>Meetings, service work, and chapter events will be available to authorized brothers.</p></article>
-        <article><span>03</span><h2>Documents</h2><p>Private documents will remain protected and will never be exposed through public asset paths.</p></article>
-        <article><span>04</span><h2>Directory</h2><p>Member and chapter contacts will be role-gated as the portal expands.</p></article>
-      </div>
-      <p className="member-dashboard__security">Private fraternity symbolism is intentionally omitted until the approved asset is supplied and placed in protected storage.</p>
-    </section>
+
+      <p className="member-dashboard__security">Private fraternity symbolism remains intentionally omitted until the approved asset is supplied and placed in protected storage.</p>
+    </PortalShell>
   );
 }
 
+function EmptyPortalState({ title, body }: { title: string; body: string }) {
+  return <div className="portal-empty"><strong>{title}</strong><p>{body}</p></div>;
+}
+
+function formatDate(value: string) {
+  const date = new Date(value.includes("T") ? value : `${value.replace(" ", "T")}Z`);
+  return Number.isNaN(date.valueOf())
+    ? value
+    : new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(date);
+}
+
 export default function MembersPage() {
-  return (
-    <main className="interior interior--dark">
-      <SiteHeader />
-      <MemberPortal />
-      <SiteFooter />
-    </main>
-  );
+  return <MemberPortal />;
 }
