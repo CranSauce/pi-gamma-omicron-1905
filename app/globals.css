@@ -1364,6 +1364,282 @@ body.legacy-intro-locked {
   .legacy-scene__year { position: static; order: -1; margin-bottom: 1rem; font-size: clamp(5rem, 25vw, 9rem); color: rgba(238,233,223,.16); }
 }
 
+/* Mystery School passage into the private fraternity operating portal. */
+html.member-intro-locked,
+body.member-intro-locked {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.member-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(181,25,31,.18), transparent 17rem),
+    radial-gradient(circle at 50% 50%, #101010, #030303 58%, #000 100%);
+  color: var(--paper);
+  animation: member-gate-dismiss 3.6s both;
+}
+
+.member-gate::before {
+  position: absolute;
+  inset: -25%;
+  content: "";
+  opacity: .18;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 4px, rgba(255,255,255,.025) 5px),
+    repeating-linear-gradient(0deg, transparent 0 6px, rgba(255,255,255,.018) 7px);
+  mask-image: radial-gradient(circle, #000 0 38%, transparent 72%);
+  animation: member-gate-noise 2.8s steps(3, end) infinite;
+}
+
+.member-gate__field {
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  width: min(82vw, 28rem);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.member-gate__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(238,233,223,.42);
+  border-radius: 50%;
+  opacity: 0;
+  box-shadow: 0 0 2.5rem rgba(181,25,31,.14), inset 0 0 2rem rgba(255,255,255,.025);
+}
+
+.member-gate__ring::before,
+.member-gate__ring::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  content: "";
+  background: var(--scarlet-bright);
+  box-shadow: 0 0 1.2rem rgba(226,41,47,.85);
+  transform: translate(-50%, -50%);
+}
+
+.member-gate__ring::before { width: .28rem; height: .28rem; border-radius: 50%; }
+.member-gate__ring::after { width: 108%; height: 1px; background: linear-gradient(90deg, transparent, rgba(238,233,223,.22), transparent); box-shadow: none; }
+
+.member-gate__ring--outer {
+  width: 100%;
+  height: 100%;
+  border-style: dashed;
+  animation: member-gate-ring-outer 2.6s cubic-bezier(.16,.85,.27,1) both;
+}
+
+.member-gate__ring--middle {
+  width: 79%;
+  height: 79%;
+  border-color: rgba(226,41,47,.58);
+  animation: member-gate-ring-middle 2.6s .12s cubic-bezier(.16,.85,.27,1) both;
+}
+
+.member-gate__ring--inner {
+  width: 58%;
+  height: 58%;
+  border-style: dotted;
+  animation: member-gate-ring-inner 2.45s .24s cubic-bezier(.16,.85,.27,1) both;
+}
+
+.member-gate__ring--core {
+  width: 38%;
+  height: 38%;
+  border-color: rgba(238,233,223,.62);
+  animation: member-gate-ring-core 2.2s .36s cubic-bezier(.16,.85,.27,1) both;
+}
+
+.member-gate__lines {
+  position: absolute;
+  inset: 13% 0;
+  opacity: 0;
+}
+
+.member-gate__lines span {
+  position: absolute;
+  left: 4%;
+  width: 92%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(238,233,223,.5) 28%, rgba(226,41,47,.82) 50%, rgba(238,233,223,.5) 72%, transparent);
+  box-shadow: 0 0 .8rem rgba(226,41,47,.2);
+}
+
+.member-gate__lines span:nth-child(1) { top: 0; }
+.member-gate__lines span:nth-child(2) { top: 33%; }
+.member-gate__lines span:nth-child(3) { top: 66%; }
+.member-gate__lines span:nth-child(4) { top: 100%; }
+.member-gate__lines--one { animation: member-gate-lines-one 2.5s .15s ease-in-out both; }
+.member-gate__lines--two { animation: member-gate-lines-two 2.5s .15s ease-in-out both; }
+
+.member-gate__seal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: 34%;
+  aspect-ratio: 1;
+  opacity: 0;
+  filter: blur(12px) brightness(.35) drop-shadow(0 0 2.5rem rgba(181,25,31,.65));
+  transform: translate(-50%, -50%) scale(.64);
+  animation: member-gate-seal 1.15s 1.35s cubic-bezier(.16,.88,.32,1) both;
+}
+
+.member-gate__seal::after {
+  position: absolute;
+  inset: 7%;
+  z-index: -1;
+  border-radius: 50%;
+  content: "";
+  background: rgba(181,25,31,.45);
+  filter: blur(1.5rem);
+}
+
+.member-gate__seal img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: circle(45.5% at 50% 50%);
+}
+
+.member-gate__copy {
+  position: absolute;
+  top: calc(47% + min(43vw, 14.8rem));
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  width: min(90vw, 34rem);
+  opacity: 0;
+  text-align: center;
+  transform: translate(-50%, 1rem);
+  animation: member-gate-copy 1s 1.85s ease both;
+}
+
+.member-gate__copy span,
+.member-gate__copy small,
+.member-gate__status,
+.member-gate__skip {
+  font-size: .5rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.member-gate__copy span { color: var(--scarlet-bright); }
+.member-gate__copy strong { margin: .45rem 0; font-family: Georgia, serif; font-size: clamp(1.35rem, 4vw, 2rem); font-weight: 400; letter-spacing: .04em; }
+.member-gate__copy small { color: #747474; }
+
+.member-gate__status {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  margin: 0;
+  color: #565656;
+}
+
+.member-gate__status::before {
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  margin-right: .8rem;
+  content: "";
+  vertical-align: middle;
+  background: var(--scarlet);
+  animation: member-gate-status-line 1.2s ease-in-out infinite alternate;
+}
+
+.member-gate__skip {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  border: 0;
+  padding: .5rem 0;
+  background: transparent;
+  color: #6f6f6f;
+  cursor: pointer;
+}
+
+.member-gate__skip:hover { color: #fff; }
+
+@keyframes member-gate-ring-outer {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.28) rotate(-55deg); }
+  28% { opacity: .8; transform: translate(-50%, -50%) scale(1.05) rotate(12deg); }
+  52% { transform: translate(-50%, -50%) scale(.78) rotate(48deg); }
+  76%, 100% { opacity: .42; transform: translate(-50%, -50%) scale(1) rotate(112deg); }
+}
+
+@keyframes member-gate-ring-middle {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(1.5) rotate(70deg); }
+  32% { opacity: .7; transform: translate(-50%, -50%) scale(.72) rotate(6deg); }
+  58% { transform: translate(-50%, -50%) scale(1.12) rotate(-38deg); }
+  78%, 100% { opacity: .52; transform: translate(-50%, -50%) scale(1) rotate(-92deg); }
+}
+
+@keyframes member-gate-ring-inner {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.2) rotate(-90deg); }
+  36% { opacity: .86; transform: translate(-50%, -50%) scale(1.28) rotate(-20deg); }
+  64% { transform: translate(-50%, -50%) scale(.82) rotate(34deg); }
+  82%, 100% { opacity: .58; transform: translate(-50%, -50%) scale(1) rotate(92deg); }
+}
+
+@keyframes member-gate-ring-core {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(1.8) rotate(110deg); }
+  42% { opacity: .78; transform: translate(-50%, -50%) scale(.55) rotate(28deg); }
+  72%, 100% { opacity: .5; transform: translate(-50%, -50%) scale(1) rotate(-46deg); }
+}
+
+@keyframes member-gate-lines-one {
+  0% { opacity: 0; transform: rotate(-18deg) scaleY(.25); }
+  34% { opacity: .6; transform: rotate(16deg) scaleY(1.12); }
+  62% { opacity: .3; transform: rotate(58deg) scaleY(.52); }
+  82%, 100% { opacity: .16; transform: rotate(90deg) scaleY(.8); }
+}
+
+@keyframes member-gate-lines-two {
+  0% { opacity: 0; transform: rotate(18deg) scaleY(1.4); }
+  34% { opacity: .45; transform: rotate(-16deg) scaleY(.58); }
+  62% { opacity: .25; transform: rotate(-58deg) scaleY(1.08); }
+  82%, 100% { opacity: .12; transform: rotate(-90deg) scaleY(.8); }
+}
+
+@keyframes member-gate-seal {
+  0% { opacity: 0; filter: blur(12px) brightness(.25); transform: translate(-50%, -50%) scale(.64); }
+  58% { opacity: 1; filter: blur(0) brightness(1.1) drop-shadow(0 0 3rem rgba(181,25,31,.72)); transform: translate(-50%, -50%) scale(1.08); }
+  100% { opacity: 1; filter: blur(0) brightness(1) drop-shadow(0 0 1.6rem rgba(181,25,31,.45)); transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes member-gate-copy { to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes member-gate-status-line { to { opacity: .3; transform: scaleX(.45); transform-origin: left; } }
+@keyframes member-gate-noise { 50% { opacity: .1; transform: translate3d(2%, -1%, 0); } }
+@keyframes member-gate-dismiss { 0%, 86% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; } }
+
+@media (max-width: 520px) {
+  .member-gate__field { width: min(88vw, 24rem); }
+  .member-gate__copy { top: calc(47% + min(47vw, 12.5rem)); }
+  .member-gate__status { right: 1rem; bottom: 1rem; left: 1rem; text-align: center; }
+  .member-gate__skip { top: 1rem; right: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .member-gate,
+  .member-gate::before,
+  .member-gate__ring,
+  .member-gate__lines,
+  .member-gate__seal,
+  .member-gate__copy,
+  .member-gate__status::before { animation: none; }
+  .member-gate__ring { opacity: .35; transform: translate(-50%, -50%); }
+  .member-gate__lines { opacity: .12; }
+  .member-gate__seal { opacity: 1; filter: none; transform: translate(-50%, -50%); }
+  .member-gate__copy { opacity: 1; transform: translate(-50%, 0); }
+}
+
 /* Private fraternity operating portal. */
 .portal-shell {
   width: 100%;
@@ -1396,6 +1672,11 @@ body.legacy-intro-locked {
 }
 
 .portal-sidebar__brand img { width: 3rem; height: 3rem; object-fit: contain; }
+.portal-sidebar__brand .portal-sidebar__mystery-mark {
+  object-fit: cover;
+  clip-path: circle(45.5% at 50% 50%);
+  filter: drop-shadow(0 0 1rem rgba(181,25,31,.34));
+}
 .portal-sidebar__brand > span { display: grid; gap: .15rem; }
 .portal-sidebar__brand strong { font-family: Georgia, serif; font-size: 1.25rem; letter-spacing: .14em; }
 .portal-sidebar__brand small { color: #747474; font-size: .48rem; letter-spacing: .15em; text-transform: uppercase; }

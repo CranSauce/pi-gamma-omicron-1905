@@ -89,3 +89,25 @@ test("keeps every public and protected portal destination routed", async () => {
   assert.match(portalSource, /href="\/members\/discuss"/);
   assert.match(portalSource, /href="\/members\/admin"/);
 });
+
+test("gives the private portal a distinct Mystery School passage", async () => {
+  const [layout, intro, portal, css] = await Promise.all([
+    readFile(new URL("../app/members/layout.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/members/MemberPortalIntro.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/members/components/PortalShell.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(layout, /<MemberPortalIntro\s*\/>/);
+  assert.match(intro, /^"use client";/);
+  assert.match(intro, /pgo-mystery-school-entry-seen/);
+  assert.match(intro, /prefers-reduced-motion:\s*reduce/);
+  assert.match(intro, /Skip transition/);
+  assert.match(intro, /mystery-school-of-pi\.png/);
+  assert.match(portal, /portal-sidebar__mystery-mark/);
+  assert.match(portal, /mystery-school-of-pi\.png/);
+  assert.doesNotMatch(portal, /pi-gamma-omicron-crest\.png/);
+  assert.match(css, /@keyframes member-gate-ring-outer/);
+  assert.match(css, /@keyframes member-gate-seal/);
+  assert.match(css, /html\.member-intro-locked/);
+});

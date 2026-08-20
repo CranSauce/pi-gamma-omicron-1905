@@ -23,7 +23,7 @@ export function PortalShell({
     <main className="portal-shell">
       <aside className="portal-sidebar">
         <a className="portal-sidebar__brand" href="/members" aria-label="Members portal home">
-          <img src="/assets/brand/pi-gamma-omicron-crest.png" width={1024} height={1024} alt="" />
+          <img className="portal-sidebar__mystery-mark" src="/assets/brand/mystery-school-of-pi.png" width={922} height={922} alt="" />
           <span><strong>ΠΓΟ</strong><small>Members’ chamber</small></span>
         </a>
 
