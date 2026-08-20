@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
 import { chapters, founders, pillars, timeline } from "../lib/site-content";
 import { LegacyExperience } from "./components/LegacyExperience";
 import { SiteFooter } from "./components/SiteChrome";
@@ -27,7 +26,7 @@ export default function Home() {
           <p>
             More than a century later, Pi Gamma Omicron is preserving that record and carrying its purpose forward.
           </p>
-          <Link className="text-link" href="/history">Explore the complete history <span aria-hidden="true">↗</span></Link>
+          <a className="text-link" href="/history">Explore the complete history <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -79,7 +78,7 @@ export default function Home() {
           <p className="archive-feature__note">
             Historical facsimile contains period racial terminology. It is preserved as part of the original record.
           </p>
-          <Link className="button button--paper" href="/history#archive">Enter the archive</Link>
+          <a className="button button--paper" href="/history#archive">Enter the archive</a>
         </div>
       </section>
 
@@ -134,7 +133,7 @@ export default function Home() {
           ))}
         </div>
         <div className="chapters-section__link">
-          <Link className="text-link text-link--light" href="/chapters">View chapters and expansion <span aria-hidden="true">↗</span></Link>
+          <a className="text-link text-link--light" href="/chapters">View chapters and expansion <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -158,7 +157,7 @@ export default function Home() {
           <p>
             Tell us where you are, what you are building, and why the principles of Pi Gamma Omicron speak to you.
           </p>
-          <Link className="button button--scarlet" href="/join">Submit your interest</Link>
+          <a className="button button--scarlet" href="/join">Submit your interest</a>
         </div>
       </section>
 

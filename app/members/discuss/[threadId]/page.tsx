@@ -1,4 +1,4 @@
-import Link from "next/link";
+/* eslint-disable @next/next/no-html-link-for-pages -- Vinext Link navigation currently throws at runtime. */
 import { asc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "../../../../db";
@@ -55,7 +55,7 @@ export default async function DiscussionThreadPage({ params }: { params: Promise
   return (
     <PortalShell member={member} active="discuss">
       <article className="discussion-detail">
-        <Link className="portal-back-link" href="/members/discuss">← Brotherhood board</Link>
+        <a className="portal-back-link" href="/members/discuss">← Brotherhood board</a>
         <header>
           <p><span>{thread.category}</span><time>{formatDate(thread.createdAt)}</time></p>
           <h1>{thread.title}</h1>

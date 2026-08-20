@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
 import { founders, timeline } from "../../lib/site-content";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
@@ -126,7 +125,7 @@ export default function HistoryPage() {
           <p><strong>Archival fact</strong> is supported by a primary record or institutional archive.</p>
           <p><strong>Official fraternity record</strong> is supplied and approved by fraternity leadership.</p>
           <p><strong>Pending verification</strong> remains clearly labeled and is never presented as settled fact.</p>
-          <Link className="text-link" href="/join">Help carry the legacy forward <span aria-hidden="true">↗</span></Link>
+          <a className="text-link" href="/join">Help carry the legacy forward <span aria-hidden="true">↗</span></a>
         </div>
       </section>
       <SiteFooter />

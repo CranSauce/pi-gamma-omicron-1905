@@ -1,28 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
+/* eslint-disable @next/next/no-html-link-for-pages -- Vinext Link navigation currently throws at runtime. */
 
 export function SiteHeader({ tone = "dark" }: { tone?: "dark" | "light" }) {
   return (
     <header className={`site-header site-header--${tone}`}>
-      <Link className="site-header__brand" href="/" aria-label="Pi Gamma Omicron home">
+      <a className="site-header__brand" href="/" aria-label="Pi Gamma Omicron home">
         <span>ΠΓΟ</span>
         <small>Founded 1905</small>
-      </Link>
+      </a>
       <nav className="site-header__links" aria-label="Primary navigation">
-        <Link href="/history">History</Link>
-        <Link href="/chapters">Chapters</Link>
-        <Link href="/#pillars">Pillars</Link>
-        <Link href="/join">Interest</Link>
-        <Link className="site-header__members" href="/members">Members</Link>
+        <a href="/history">History</a>
+        <a href="/chapters">Chapters</a>
+        <a href="/#pillars">Pillars</a>
+        <a href="/join">Interest</a>
+        <a className="site-header__members" href="/members">Members</a>
       </nav>
       <details className="site-header__menu">
         <summary aria-label="Open navigation">Menu</summary>
         <nav aria-label="Mobile navigation">
-          <Link href="/history">History</Link>
-          <Link href="/chapters">Chapters</Link>
-          <Link href="/#pillars">Pillars</Link>
-          <Link href="/join">Interest</Link>
-          <Link href="/members">Members</Link>
+          <a href="/history">History</a>
+          <a href="/chapters">Chapters</a>
+          <a href="/#pillars">Pillars</a>
+          <a href="/join">Interest</a>
+          <a href="/members">Members</a>
         </nav>
       </details>
     </header>
@@ -45,11 +45,11 @@ export function SiteFooter() {
           <span>1905 — 2026 — Beyond</span>
         </div>
         <nav aria-label="Footer navigation">
-          <Link href="/history">History</Link>
-          <Link href="/chapters">Chapters</Link>
-          <Link href="/join">Interest</Link>
-          <Link href="/privacy">Privacy</Link>
-          <Link href="/members">Members</Link>
+          <a href="/history">History</a>
+          <a href="/chapters">Chapters</a>
+          <a href="/join">Interest</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/members">Members</a>
         </nav>
       </div>
       <p className="site-footer__note">

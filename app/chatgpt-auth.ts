@@ -22,7 +22,17 @@ export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
   const requestHeaders = await headers();
   const userId = requestHeaders.get(USER_ID_HEADER);
   const email = requestHeaders.get(USER_EMAIL_HEADER);
-  if (!userId || !email) return null;
+  if (!userId || !email) {
+    if (isLocalPreviewHost(requestHeaders.get("host"))) {
+      return {
+        userId: "local-portal-preview",
+        displayName: "Local Portal Preview",
+        email: "portal-preview@localhost.invalid",
+        fullName: "Local Portal Preview",
+      };
+    }
+    return null;
+  }
 
   const encodedFullName = requestHeaders.get(USER_FULL_NAME_HEADER);
   const fullName =
@@ -55,7 +65,14 @@ export function chatGPTSignInPath(returnTo: string): string {
 
 export function chatGPTSignOutPath(returnTo = "/"): string {
   const safeReturnTo = safeRelativeReturnPath(returnTo);
+  if (process.env.NODE_ENV !== "production") return safeReturnTo;
   return `${SIGN_OUT_PATH}?return_to=${encodeURIComponent(safeReturnTo)}`;
+}
+
+function isLocalPreviewHost(host: string | null) {
+  if (process.env.NODE_ENV === "production" || !host) return false;
+  const hostname = host.split(":")[0].toLowerCase();
+  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
 }
 
 function safeRelativeReturnPath(value: string): string {

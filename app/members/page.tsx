@@ -1,4 +1,4 @@
-import Link from "next/link";
+/* eslint-disable @next/next/no-html-link-for-pages -- Vinext Link navigation currently throws at runtime. */
 import { and, count, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "../../db";
 import { announcements, discussionThreads, interests, members } from "../../db/schema";
@@ -113,7 +113,7 @@ async function MemberPortal() {
         <section className="portal-panel portal-panel--wide" aria-labelledby="dashboard-announcements">
           <div className="portal-panel__heading">
             <div><span>01</span><h2 id="dashboard-announcements">Latest announcements</h2></div>
-            <Link href="/members/announcements">View all</Link>
+            <a href="/members/announcements">View all</a>
           </div>
           {announcementRows.length ? (
             <div className="announcement-list announcement-list--compact">
@@ -135,16 +135,16 @@ async function MemberPortal() {
           <section className="portal-panel" aria-labelledby="dashboard-discussions">
             <div className="portal-panel__heading">
               <div><span>02</span><h2 id="dashboard-discussions">Brotherhood board</h2></div>
-              <Link href="/members/discuss">Open board</Link>
+              <a href="/members/discuss">Open board</a>
             </div>
             {discussionRows.length ? (
               <div className="discussion-list discussion-list--compact">
                 {discussionRows.map((thread) => (
-                  <Link href={`/members/discuss/${thread.id}`} key={thread.id}>
+                  <a href={`/members/discuss/${thread.id}`} key={thread.id}>
                     <span>{thread.category}</span>
                     <strong>{thread.title}</strong>
                     <small>{thread.author || "Member"} · {formatDate(thread.createdAt)}</small>
-                  </Link>
+                  </a>
                 ))}
               </div>
             ) : (
@@ -158,9 +158,9 @@ async function MemberPortal() {
             <div><span>03</span><h2 id="dashboard-actions">Your access</h2></div>
           </div>
           <div className="portal-quick-links">
-            <Link href="/members/announcements"><span>Officer notices</span><strong>Read announcements</strong></Link>
-            {canUseFraternalDirectory(member.role) && <Link href="/members/directory"><span>Active membership</span><strong>Open directory</strong></Link>}
-            {canManageMembers(member.role) && <Link href="/members/admin"><span>National operations</span><strong>Manage members</strong></Link>}
+            <a href="/members/announcements"><span>Officer notices</span><strong>Read announcements</strong></a>
+            {canUseFraternalDirectory(member.role) && <a href="/members/directory"><span>Active membership</span><strong>Open directory</strong></a>}
+            {canManageMembers(member.role) && <a href="/members/admin"><span>National operations</span><strong>Manage members</strong></a>}
           </div>
         </section>
       </div>

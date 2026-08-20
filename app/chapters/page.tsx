@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { chapters, expansionDestinations } from "../../lib/site-content";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
@@ -69,7 +68,7 @@ export default function ChaptersPage() {
       <section className="expansion-callout">
         <p>New chapters should begin with a shared commitment to scholarship, integrity, brotherhood, and meaningful community work.</p>
         <h2>Build the next chapter.</h2>
-        <Link className="button button--scarlet" href="/join">Express chapter interest</Link>
+        <a className="button button--scarlet" href="/join">Express chapter interest</a>
       </section>
       <SiteFooter />
     </main>

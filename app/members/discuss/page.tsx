@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { getDb } from "../../../db";
@@ -57,7 +56,7 @@ export default async function DiscussionBoardPage() {
       <section className="discussion-board" aria-label="Member discussions">
         <div className="discussion-board__labels" aria-hidden="true"><span>Conversation</span><span>Activity</span></div>
         {threads.length ? threads.map((thread) => (
-          <Link className="discussion-thread-card" href={`/members/discuss/${thread.id}`} key={thread.id}>
+          <a className="discussion-thread-card" href={`/members/discuss/${thread.id}`} key={thread.id}>
             <div>
               <p>
                 <span>{thread.category}</span>
@@ -73,7 +72,7 @@ export default async function DiscussionBoardPage() {
               <span>Replies</span>
               <time>{formatDate(thread.updatedAt)}</time>
             </div>
-          </Link>
+          </a>
         )) : (
           <div className="portal-empty portal-empty--large"><strong>The board is open.</strong><p>Create the first conversation for the brotherhood.</p></div>
         )}

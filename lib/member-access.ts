@@ -112,14 +112,16 @@ function bootstrapSuperAdminEmails() {
   const rawValue = (env as unknown as Record<string, unknown>)[
     "PORTAL_SUPER_ADMIN_EMAILS"
   ];
-  if (typeof rawValue !== "string") return new Set<string>();
-
-  return new Set(
-    rawValue
+  const emails = new Set(
+    (typeof rawValue === "string" ? rawValue : "")
       .split(/[\s,;]+/)
       .map((value) => value.trim().toLowerCase())
       .filter(Boolean),
   );
+  if (process.env.NODE_ENV !== "production") {
+    emails.add("portal-preview@localhost.invalid");
+  }
+  return emails;
 }
 
 function memberDisplayName(email: string, displayName?: string) {

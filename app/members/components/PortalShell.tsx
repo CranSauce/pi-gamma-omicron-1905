@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
+/* eslint-disable @next/next/no-html-link-for-pages -- Vinext Link navigation currently throws at runtime. */
 import type { ReactNode } from "react";
 import {
   canManageMembers,
@@ -22,10 +22,10 @@ export function PortalShell({
   return (
     <main className="portal-shell">
       <aside className="portal-sidebar">
-        <Link className="portal-sidebar__brand" href="/members" aria-label="Members portal home">
+        <a className="portal-sidebar__brand" href="/members" aria-label="Members portal home">
           <img src="/assets/brand/pi-gamma-omicron-crest.png" width={1024} height={1024} alt="" />
           <span><strong>ΠΓΟ</strong><small>Members’ chamber</small></span>
-        </Link>
+        </a>
 
         <nav className="portal-nav" aria-label="Member navigation">
           <PortalLink href="/members" label="Overview" index="01" current={active === "home"} />
@@ -48,7 +48,7 @@ export function PortalShell({
         </div>
 
         <div className="portal-sidebar__actions">
-          <Link href="/">Public website</Link>
+          <a href="/">Public website</a>
           <a href={chatGPTSignOutPath("/")}>Sign out</a>
         </div>
       </aside>
@@ -70,9 +70,9 @@ function PortalLink({
   current: boolean;
 }) {
   return (
-    <Link href={href} aria-current={current ? "page" : undefined}>
+    <a href={href} aria-current={current ? "page" : undefined}>
       <span>{index}</span>
       <strong>{label}</strong>
-    </Link>
+    </a>
   );
 }
