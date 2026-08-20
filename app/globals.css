@@ -622,6 +622,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* The Legacy Experience — a scroll-led passage from archive to renewal. */
+html.legacy-intro-locked,
+body.legacy-intro-locked {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 .legacy-experience {
   --legacy-progress: 0;
   position: relative;
@@ -986,6 +992,144 @@ a { color: inherit; text-decoration: none; }
   transition: opacity .5s ease;
 }
 
+.legacy-experience__skip {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  z-index: 40;
+  padding: .55rem .75rem;
+  border: 0;
+  border-bottom: 1px solid rgba(238,233,223,.24);
+  opacity: 0;
+  background: transparent;
+  color: #777;
+  cursor: pointer;
+  font: inherit;
+  font-size: .48rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  transform: translate3d(-50%, .75rem, 0);
+  transition: color .2s ease, border-color .2s ease;
+}
+
+.legacy-experience__skip:hover,
+.legacy-experience__skip:focus-visible {
+  border-color: var(--scarlet-bright);
+  color: #fff;
+}
+
+.legacy-experience[data-intro-state="ready"] .legacy-experience__skip { display: none; }
+
+.legacy-experience[data-intro-state="loading"] .legacy-experience__grain {
+  animation: legacy-intro-atmosphere 1.5s .1s both;
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-experience__light {
+  animation: legacy-intro-light 1.8s .12s both;
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-artifact {
+  animation: legacy-intro-artifact 1.55s .22s both cubic-bezier(.16,.84,.26,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-artifact__orbit--outer {
+  animation: legacy-intro-ring-outer 1.75s .12s both cubic-bezier(.2,.75,.2,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-artifact__orbit--inner {
+  animation: legacy-intro-ring-inner 1.55s .24s both cubic-bezier(.2,.75,.2,1);
+}
+
+.legacy-experience[data-intro-state="loading"] [data-legacy-scene="0"] .legacy-scene__eyebrow {
+  animation: legacy-intro-copy .75s 1.15s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] [data-legacy-scene="0"] h1 span:first-child {
+  animation: legacy-intro-copy .9s 1.38s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] [data-legacy-scene="0"] h1 span:last-child {
+  animation: legacy-intro-copy .9s 1.62s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] [data-legacy-scene="0"] .legacy-scene__motto {
+  animation: legacy-intro-copy .75s 1.95s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-experience__rail {
+  animation: legacy-intro-rail .85s 2.18s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-experience__progress {
+  animation: legacy-intro-bar .8s 2.38s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .site-header {
+  animation: legacy-intro-header .9s 2.5s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-experience__scroll {
+  animation: legacy-intro-copy .65s 2.82s both cubic-bezier(.2,.75,.25,1);
+}
+
+.legacy-experience[data-intro-state="loading"] .legacy-experience__skip {
+  animation: legacy-intro-skip .55s 1s both ease;
+}
+
+@keyframes legacy-intro-atmosphere {
+  from { opacity: 0; }
+  to { opacity: .16; }
+}
+
+@keyframes legacy-intro-light {
+  from { opacity: 0; filter: blur(36px); transform: scale(.72); }
+  to { opacity: .8; filter: blur(10px); transform: scale(1); }
+}
+
+@keyframes legacy-intro-artifact {
+  from { opacity: 0; filter: blur(12px); transform: translate3d(-50%, -50%, 0) scale(.68) rotateY(-16deg); }
+  55% { opacity: .92; filter: blur(0); }
+  to { opacity: 1; filter: blur(0); transform: translate3d(-50%, -50%, 0) scale(1) rotateY(-5deg); }
+}
+
+@keyframes legacy-intro-ring-outer {
+  from { opacity: 0; transform: rotate(-110deg) scale(.72); }
+  30% { opacity: 1; }
+  to { opacity: 1; transform: rotate(360deg) scale(1); }
+}
+
+@keyframes legacy-intro-ring-inner {
+  from { opacity: 0; transform: rotate(95deg) scale(.76); }
+  30% { opacity: 1; }
+  to { opacity: 1; transform: rotate(-360deg) scale(1); }
+}
+
+@keyframes legacy-intro-copy {
+  from { opacity: 0; filter: blur(8px); transform: translate3d(0, 1.4rem, 0); }
+  to { opacity: 1; filter: blur(0); transform: translate3d(0, 0, 0); }
+}
+
+@keyframes legacy-intro-rail {
+  from { opacity: 0; transform: translate3d(1.5rem, -50%, 0); }
+  to { opacity: 1; transform: translate3d(0, -50%, 0); }
+}
+
+@keyframes legacy-intro-bar {
+  from { opacity: 0; width: 0; }
+  to { opacity: 1; width: clamp(5rem, 10vw, 8rem); }
+}
+
+@keyframes legacy-intro-header {
+  from { opacity: 0; transform: translate3d(0, -1.25rem, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes legacy-intro-skip {
+  from { opacity: 0; transform: translate3d(-50%, .75rem, 0); }
+  to { opacity: 1; transform: translate3d(-50%, 0, 0); }
+}
+
 .legacy-experience[data-scene="0"] [data-legacy-scene="0"],
 .legacy-experience[data-scene="1"] [data-legacy-scene="1"],
 .legacy-experience[data-scene="2"] [data-legacy-scene="2"],
@@ -1122,6 +1266,8 @@ a { color: inherit; text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .001ms !important; }
+  html.legacy-intro-locked,
+  body.legacy-intro-locked { overflow: auto; }
   .legacy-experience { height: auto; }
   .legacy-experience__stage { position: relative; height: auto; min-height: 100svh; overflow: hidden; perspective: none; }
   .legacy-experience .site-header { position: relative; }
@@ -1131,7 +1277,11 @@ a { color: inherit; text-decoration: none; }
   .legacy-documents,
   .legacy-artifact__orbit,
   .legacy-artifact__layer--silver,
-  .legacy-artifact__layer--scarlet { display: none; }
+  .legacy-artifact__layer--scarlet,
+  .legacy-experience__skip { display: none; }
+  .legacy-experience[data-intro-state="loading"] *,
+  .legacy-experience[data-intro-state="loading"] *::before,
+  .legacy-experience[data-intro-state="loading"] *::after { animation: none !important; }
   .legacy-artifact,
   .legacy-experience[data-scene] .legacy-artifact {
     position: relative;

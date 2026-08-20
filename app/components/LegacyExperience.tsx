@@ -8,12 +8,52 @@ const sceneBreaks = [0.11, 0.28, 0.47, 0.66, 0.84];
 
 export function LegacyExperience() {
   const experienceRef = useRef<HTMLElement>(null);
+  const finishIntroRef = useRef<() => void>(() => undefined);
 
   useEffect(() => {
     const experience = experienceRef.current;
     if (!experience) return;
 
     let frame = 0;
+    let introTimer = 0;
+
+    const releaseIntro = () => {
+      window.clearTimeout(introTimer);
+      experience.dataset.introState = "ready";
+      document.documentElement.classList.remove("legacy-intro-locked");
+      document.body.classList.remove("legacy-intro-locked");
+      try {
+        window.sessionStorage.setItem("pgo-legacy-intro-played", "true");
+      } catch {
+        // The cinematic remains functional when browser storage is unavailable.
+      }
+    };
+
+    finishIntroRef.current = releaseIntro;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const navigation = window.performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    let playedThisSession = false;
+    try {
+      playedThisSession = window.sessionStorage.getItem("pgo-legacy-intro-played") === "true";
+    } catch {
+      playedThisSession = false;
+    }
+
+    const shouldPlayIntro =
+      !reducedMotion &&
+      window.scrollY < 8 &&
+      !window.location.hash &&
+      (!playedThisSession || navigation?.type === "reload");
+
+    if (shouldPlayIntro) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.classList.add("legacy-intro-locked");
+      document.body.classList.add("legacy-intro-locked");
+      introTimer = window.setTimeout(releaseIntro, 3600);
+    } else {
+      releaseIntro();
+    }
 
     const update = () => {
       frame = 0;
@@ -36,6 +76,9 @@ export function LegacyExperience() {
     window.addEventListener("resize", queueUpdate);
 
     return () => {
+      window.clearTimeout(introTimer);
+      document.documentElement.classList.remove("legacy-intro-locked");
+      document.body.classList.remove("legacy-intro-locked");
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", queueUpdate);
       window.removeEventListener("resize", queueUpdate);
@@ -47,6 +90,7 @@ export function LegacyExperience() {
       ref={experienceRef}
       className="legacy-experience"
       data-scene="0"
+      data-intro-state="loading"
       aria-labelledby="legacy-experience-title"
     >
       <div className="legacy-experience__stage">
@@ -143,6 +187,13 @@ export function LegacyExperience() {
 
         <div className="legacy-experience__progress" aria-hidden="true"><span /></div>
         <p className="legacy-experience__scroll" aria-hidden="true">Scroll to enter the legacy</p>
+        <button
+          className="legacy-experience__skip"
+          type="button"
+          onClick={() => finishIntroRef.current()}
+        >
+          Skip intro
+        </button>
       </div>
     </section>
   );

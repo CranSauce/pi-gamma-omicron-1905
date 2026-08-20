@@ -48,8 +48,13 @@ test("keeps scroll motion progressive and accessible", async () => {
   assert.match(component, /^"use client";/);
   assert.match(component, /requestAnimationFrame/);
   assert.match(component, /--legacy-progress/);
+  assert.match(component, /data-intro-state="loading"/);
+  assert.match(component, /legacy-intro-locked/);
+  assert.match(component, /Skip intro/);
   assert.match(component, /aria-labelledby="legacy-experience-title"/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /@keyframes legacy-intro-ring-outer/);
+  assert.match(css, /@keyframes legacy-intro-header/);
   assert.match(css, /\.legacy-experience\s*\{[\s\S]*height:\s*600svh/);
   assert.match(css, /\.legacy-experience__stage\s*\{[\s\S]*position:\s*sticky/);
   assert.match(css, /animation-timeline:\s*view\(\)/);
