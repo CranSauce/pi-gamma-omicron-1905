@@ -26,7 +26,7 @@ async function MemberPortal() {
   let member: typeof members.$inferSelect | undefined;
 
   try {
-    member = await findMemberByEmail(user.email);
+    member = await findMemberByEmail(user.email, user.displayName);
   } catch {
     member = undefined;
   }
