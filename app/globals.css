@@ -355,6 +355,7 @@ a { color: inherit; text-decoration: none; }
 .timeline-preview__event div > small { color: #666; font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; }
 
 .archive-feature { display: grid; grid-template-columns: 1fr 1fr; min-height: 42rem; background: #d8d2c7; color: #111; }
+.archive-feature > * { min-width: 0; }
 .archive-feature__image { min-height: 35rem; padding: clamp(2rem, 6vw, 6rem); display: grid; place-items: center; background: #c7c0b5; overflow: hidden; }
 .archive-feature__image img { width: min(100%, 38rem); max-height: 37rem; object-fit: contain; filter: grayscale(1) contrast(1.08); box-shadow: 0 2rem 5rem rgba(18,15,12,.18); transform: rotate(-1.4deg); }
 .archive-feature__copy { display: grid; align-content: center; padding: clamp(3rem, 8vw, 8rem); }
@@ -449,6 +450,7 @@ a { color: inherit; text-decoration: none; }
   .pillars-grid article:last-child { border-bottom: 0; }
   .site-footer__meta { align-items: flex-start; flex-direction: column; gap: 2rem; }
   .archive-feature__image { min-height: 28rem; }
+  .archive-feature__copy { padding: 3.5rem 2rem; }
 }
 
 .interior { min-height: 100vh; }
@@ -880,6 +882,10 @@ body.legacy-intro-locked {
   white-space: nowrap;
 }
 
+.legacy-scene--founding .legacy-scene__year {
+  bottom: calc(-.16em + 3px);
+}
+
 .legacy-scene--record {
   right: 12vw;
   left: auto;
@@ -951,13 +957,13 @@ body.legacy-intro-locked {
 
 .legacy-document--left {
   top: 22%;
-  left: 5vw;
+  left: 8vw;
   transform: translate3d(-5rem, 3rem, -40px) rotate(-7deg);
 }
 
 .legacy-document--right {
   top: 14%;
-  right: 5vw;
+  right: 8vw;
   transform: translate3d(5rem, -2rem, -20px) rotate(6deg);
 }
 
@@ -1296,12 +1302,13 @@ body.legacy-intro-locked {
   .legacy-scene h1 { font-size: clamp(2.7rem, 12vw, 4.5rem); }
   .legacy-scene h2 { font-size: clamp(3rem, 13vw, 5rem); }
   .legacy-scene__year { right: -.1em; bottom: .1em; font-size: clamp(8rem, 42vw, 15rem); }
+  .legacy-scene--founding .legacy-scene__year { bottom: calc(.1em + 3px); }
   .legacy-scene--record { right: 1.25rem; align-items: flex-start; text-align: left; }
   .legacy-scene--quiet { inset-inline: 1.25rem; justify-content: center; }
   .legacy-document { width: min(38vw, 12rem); padding: .35rem; }
   .legacy-document figcaption { display: none; }
-  .legacy-document--left { top: 16%; left: -1rem; }
-  .legacy-document--right { top: 12%; right: -1rem; }
+  .legacy-document--left { top: 16%; left: .25rem; }
+  .legacy-document--right { top: 12%; right: .25rem; }
   .legacy-experience[data-scene="1"] .legacy-artifact,
   .legacy-experience[data-scene="2"] .legacy-artifact { top: 36%; width: min(61vw, 21rem); }
   .legacy-experience[data-scene="5"] .legacy-artifact { top: 33%; left: 50%; width: min(72vw, 25rem); }
@@ -1359,6 +1366,8 @@ body.legacy-intro-locked {
 
 /* Private fraternity operating portal. */
 .portal-shell {
+  width: 100%;
+  max-width: 100%;
   min-height: 100svh;
   display: grid;
   grid-template-columns: 17.5rem minmax(0, 1fr);
@@ -1367,6 +1376,7 @@ body.legacy-intro-locked {
 }
 
 .portal-sidebar {
+  min-width: 0;
   position: sticky;
   top: 0;
   display: flex;
@@ -1590,7 +1600,7 @@ body.legacy-intro-locked {
 
 @media (max-width: 1050px) {
   .portal-shell { grid-template-columns: 1fr; }
-  .portal-sidebar { position: relative; z-index: 10; height: auto; }
+  .portal-sidebar { position: relative; z-index: 10; width: 100%; height: auto; overflow: hidden; }
   .portal-nav { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .portal-nav a { grid-template-columns: 1fr; gap: .25rem; }
   .portal-sidebar__identity { margin-top: 1.5rem; }
@@ -1601,13 +1611,16 @@ body.legacy-intro-locked {
 }
 
 @media (max-width: 760px) {
-  .portal-content { padding: 1.25rem; }
-  .portal-nav { display: flex; overflow-x: auto; padding-bottom: .5rem; }
+  .portal-content { width: 100%; max-width: 100%; padding: 1.25rem; overflow: hidden; }
+  .portal-nav { display: flex; width: 100%; min-width: 0; max-width: 100%; overflow-x: auto; padding-bottom: .5rem; scrollbar-width: none; overscroll-behavior-inline: contain; }
+  .portal-nav::-webkit-scrollbar { display: none; }
   .portal-nav a { min-width: 9rem; }
   .portal-page-header,
   .portal-dashboard-grid,
   .admin-section { grid-template-columns: 1fr; }
-  .portal-page-header { gap: 2rem; }
+  .portal-page-header { min-width: 0; max-width: 100%; gap: 2rem; }
+  .portal-page-header h1 { max-width: 100%; font-size: clamp(3.15rem, 14vw, 4.6rem); }
+  .portal-page-header--compact h1 { font-size: clamp(2.75rem, 12vw, 4.25rem); }
   .portal-page-header__action { justify-content: flex-start; }
   .portal-panel--wide { grid-row: auto; }
   .member-directory { grid-template-columns: 1fr; }
