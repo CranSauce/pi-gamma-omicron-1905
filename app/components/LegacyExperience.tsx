@@ -4,7 +4,9 @@
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "./SiteChrome";
 
-const sceneBreaks = [0.11, 0.28, 0.47, 0.66, 0.84];
+const sceneBreaks = [0.1, 0.27, 0.46, 0.65, 0.87];
+const renewalStart = sceneBreaks[3];
+const renewalEnd = sceneBreaks[4];
 
 export function LegacyExperience() {
   const experienceRef = useRef<HTMLElement>(null);
@@ -61,8 +63,18 @@ export function LegacyExperience() {
       const distance = Math.max(experience.offsetHeight - window.innerHeight, 1);
       const progress = Math.min(1, Math.max(0, -rect.top / distance));
       const scene = sceneBreaks.findIndex((point) => progress < point);
+      const renewalProgress = Math.min(
+        1,
+        Math.max(0, (progress - renewalStart) / (renewalEnd - renewalStart)),
+      );
+      const futureProgress = Math.min(
+        1,
+        Math.max(0, (progress - renewalEnd) / (1 - renewalEnd)),
+      );
 
       experience.style.setProperty("--legacy-progress", progress.toFixed(4));
+      experience.style.setProperty("--legacy-renewal-progress", renewalProgress.toFixed(4));
+      experience.style.setProperty("--legacy-future-progress", futureProgress.toFixed(4));
       experience.dataset.scene = String(scene === -1 ? sceneBreaks.length : scene);
     };
 
