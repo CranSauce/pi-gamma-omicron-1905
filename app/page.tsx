@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { chapters, founders, pillars, timeline } from "../lib/site-content";
-import { SiteFooter, SiteHeader } from "./components/SiteChrome";
+import { LegacyExperience } from "./components/LegacyExperience";
+import { SiteFooter } from "./components/SiteChrome";
 
 export const metadata = {
   title: "Founded 1905",
@@ -12,35 +13,7 @@ export const metadata = {
 export default function Home() {
   return (
     <main>
-      <section className="legacy-hero" aria-labelledby="legacy-title">
-        <div className="legacy-hero__atmosphere" aria-hidden="true" />
-        <SiteHeader />
-
-        <div className="legacy-hero__content">
-          <p className="legacy-hero__kicker">The first chapter · Columbus, Ohio</p>
-          <div className="legacy-hero__crest-wrap">
-            <div className="legacy-hero__halo" aria-hidden="true" />
-            <img
-              className="legacy-hero__crest"
-              src="/assets/brand/pi-gamma-omicron-crest.png"
-              width={1024}
-              height={1024}
-              alt="The crest of Pi Gamma Omicron Fraternity"
-            />
-          </div>
-          <div className="legacy-hero__title-lockup">
-            <p>Founded Sunday, January 1</p>
-            <h1 id="legacy-title">1905</h1>
-            <p>The Ohio State University</p>
-          </div>
-        </div>
-
-        <div className="legacy-hero__motto">
-          <span className="legacy-hero__line" aria-hidden="true" />
-          <p><em>Tenebrae Luci Locum Dabunt</em></p>
-          <small>Darkness shall give way to light.</small>
-        </div>
-      </section>
+      <LegacyExperience />
 
       <section className="legacy-intro" id="legacy-begins" aria-labelledby="legacy-begins-title">
         <div>
