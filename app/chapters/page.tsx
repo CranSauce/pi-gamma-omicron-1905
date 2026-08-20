@@ -1,4 +1,5 @@
 import { chapters, expansionDestinations } from "../../lib/site-content";
+import { siteHref } from "../../lib/site-urls";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
 export const metadata = {
@@ -68,7 +69,7 @@ export default function ChaptersPage() {
       <section className="expansion-callout">
         <p>New chapters should begin with a shared commitment to scholarship, integrity, brotherhood, and meaningful community work.</p>
         <h2>Build the next chapter.</h2>
-        <a className="button button--scarlet" href="/join">Express chapter interest</a>
+        <a className="button button--scarlet" href={siteHref("/join")}>Express chapter interest</a>
       </section>
       <SiteFooter />
     </main>

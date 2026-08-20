@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { isPagesDemo, siteHref } from "../../lib/site-urls";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -20,6 +21,15 @@ export function InterestForm() {
 
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
+
+    if (isPagesDemo()) {
+      window.setTimeout(() => {
+        setState("success");
+        setMessage("Demo submission complete—no information was stored or transmitted.");
+        form.reset();
+      }, 650);
+      return;
+    }
 
     try {
       const response = await fetch("/api/interest", {
@@ -108,7 +118,7 @@ export function InterestForm() {
       <div className="interest-form__consent">
         <label>
           <input type="checkbox" name="consent" value="yes" required />
-          <span>I consent to Pi Gamma Omicron storing this information and contacting me about membership or chapter interest. I have reviewed the <a href="/privacy" target="_blank">privacy notice</a>.</span>
+          <span>I consent to Pi Gamma Omicron storing this information and contacting me about membership or chapter interest. I have reviewed the <a href={siteHref("/privacy")} target={isPagesDemo() ? undefined : "_blank"}>privacy notice</a>.</span>
         </label>
         <button className="button button--scarlet" type="submit" disabled={state === "submitting"}>
           {state === "submitting" ? "Submitting…" : "Submit your interest"}

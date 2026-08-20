@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { founders, timeline } from "../../lib/site-content";
+import { assetHref, siteHref } from "../../lib/site-urls";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
 export const metadata = {
@@ -75,7 +76,7 @@ export default function HistoryPage() {
         </div>
         <div className="archive-grid">
           <figure className="archive-grid__feature">
-            <img src="/assets/archive/press-january-4-1906.png" width={1224} height={1211} loading="lazy" alt="1906 newspaper clipping announcing a chapter of Pi Gamma Omicron in Ohio" />
+            <img src={assetHref("/assets/archive/press-january-4-1906.png")} width={1224} height={1211} loading="lazy" alt="1906 newspaper clipping announcing a chapter of Pi Gamma Omicron in Ohio" />
             <figcaption>
               <strong>“Chapter of Pi Gamma Omicron Organized in Ohio”</strong>
               <span><em>Champaign Daily Gazette</em> · January 4, 1906</span>
@@ -83,7 +84,7 @@ export default function HistoryPage() {
             </figcaption>
           </figure>
           <figure>
-            <img src="/assets/archive/press-january-3.png" width={1224} height={625} loading="lazy" alt="Early newspaper announcement of Pi Gamma Omicron" />
+            <img src={assetHref("/assets/archive/press-january-3.png")} width={1224} height={625} loading="lazy" alt="Early newspaper announcement of Pi Gamma Omicron" />
             <figcaption>
               <strong>“Colored Greek Letter Fraternity”</strong>
               <span>Dated January 3 · publication and year under verification</span>
@@ -91,7 +92,7 @@ export default function HistoryPage() {
             </figcaption>
           </figure>
           <figure>
-            <img src="/assets/archive/incorporation-october-17.png" width={1224} height={970} loading="lazy" alt="Newspaper clipping reporting the incorporation of Pi Gamma Omicron" />
+            <img src={assetHref("/assets/archive/incorporation-october-17.png")} width={1224} height={970} loading="lazy" alt="Newspaper clipping reporting the incorporation of Pi Gamma Omicron" />
             <figcaption>
               <strong>“Colored Men Form ‘Frat’”</strong>
               <span>Dated October 17 · publication and year under verification</span>
@@ -125,7 +126,7 @@ export default function HistoryPage() {
           <p><strong>Archival fact</strong> is supported by a primary record or institutional archive.</p>
           <p><strong>Official fraternity record</strong> is supplied and approved by fraternity leadership.</p>
           <p><strong>Pending verification</strong> remains clearly labeled and is never presented as settled fact.</p>
-          <a className="text-link" href="/join">Help carry the legacy forward <span aria-hidden="true">↗</span></a>
+          <a className="text-link" href={siteHref("/join")}>Help carry the legacy forward <span aria-hidden="true">↗</span></a>
         </div>
       </section>
       <SiteFooter />

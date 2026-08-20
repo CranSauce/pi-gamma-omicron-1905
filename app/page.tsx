@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { chapters, founders, pillars, timeline } from "../lib/site-content";
+import { assetHref, siteHref } from "../lib/site-urls";
 import { LegacyExperience } from "./components/LegacyExperience";
 import { SiteFooter } from "./components/SiteChrome";
 
@@ -26,7 +27,7 @@ export default function Home() {
           <p>
             More than a century later, Pi Gamma Omicron is preserving that record and carrying its purpose forward.
           </p>
-          <a className="text-link" href="/history">Explore the complete history <span aria-hidden="true">↗</span></a>
+          <a className="text-link" href={siteHref("/history")}>Explore the complete history <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -62,7 +63,7 @@ export default function Home() {
       <section className="archive-feature" aria-labelledby="archive-title">
         <div className="archive-feature__image">
           <img
-            src="/assets/archive/press-january-4-1906.png"
+            src={assetHref("/assets/archive/press-january-4-1906.png")}
             width={1224}
             height={1211}
             loading="lazy"
@@ -78,7 +79,7 @@ export default function Home() {
           <p className="archive-feature__note">
             Historical facsimile contains period racial terminology. It is preserved as part of the original record.
           </p>
-          <a className="button button--paper" href="/history#archive">Enter the archive</a>
+          <a className="button button--paper" href={siteHref("/history#archive")}>Enter the archive</a>
         </div>
       </section>
 
@@ -133,7 +134,7 @@ export default function Home() {
           ))}
         </div>
         <div className="chapters-section__link">
-          <a className="text-link text-link--light" href="/chapters">View chapters and expansion <span aria-hidden="true">↗</span></a>
+          <a className="text-link text-link--light" href={siteHref("/chapters")}>View chapters and expansion <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -157,7 +158,7 @@ export default function Home() {
           <p>
             Tell us where you are, what you are building, and why the principles of Pi Gamma Omicron speak to you.
           </p>
-          <a className="button button--scarlet" href="/join">Submit your interest</a>
+          <a className="button button--scarlet" href={siteHref("/join")}>Submit your interest</a>
         </div>
       </section>
 

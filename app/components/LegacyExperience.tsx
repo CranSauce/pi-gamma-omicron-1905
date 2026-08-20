@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useRef } from "react";
+import { assetHref, isPagesDemo, siteHref } from "../../lib/site-urls";
 import { SiteHeader } from "./SiteChrome";
 
 const sceneBreaks = [0.1, 0.27, 0.46, 0.65, 0.87];
@@ -45,7 +46,7 @@ export function LegacyExperience() {
     const shouldPlayIntro =
       !reducedMotion &&
       window.scrollY < 8 &&
-      !window.location.hash &&
+      (!window.location.hash || (isPagesDemo() && window.location.hash === "#/")) &&
       (!playedThisSession || navigation?.type === "reload");
 
     if (shouldPlayIntro) {
@@ -122,21 +123,21 @@ export function LegacyExperience() {
           <div className="legacy-artifact__glow" />
           <img
             className="legacy-artifact__layer legacy-artifact__layer--silver"
-            src="/assets/brand/pi-gamma-omicron-crest.png"
+            src={assetHref("/assets/brand/pi-gamma-omicron-crest.png")}
             width={1024}
             height={1024}
             alt=""
           />
           <img
             className="legacy-artifact__layer legacy-artifact__layer--scarlet"
-            src="/assets/brand/pi-gamma-omicron-crest.png"
+            src={assetHref("/assets/brand/pi-gamma-omicron-crest.png")}
             width={1024}
             height={1024}
             alt=""
           />
           <img
             className="legacy-artifact__layer legacy-artifact__layer--main"
-            src="/assets/brand/pi-gamma-omicron-crest.png"
+            src={assetHref("/assets/brand/pi-gamma-omicron-crest.png")}
             width={1024}
             height={1024}
             alt=""
@@ -145,11 +146,11 @@ export function LegacyExperience() {
 
         <div className="legacy-documents" aria-hidden="true">
           <figure className="legacy-document legacy-document--left">
-            <img src="/assets/archive/press-january-3.png" width={1224} height={627} alt="" />
+            <img src={assetHref("/assets/archive/press-january-3.png")} width={1224} height={627} alt="" />
             <figcaption>January 3 · Contemporary press</figcaption>
           </figure>
           <figure className="legacy-document legacy-document--right">
-            <img src="/assets/archive/press-january-4-1906.png" width={1224} height={1211} alt="" />
+            <img src={assetHref("/assets/archive/press-january-4-1906.png")} width={1224} height={1211} alt="" />
             <figcaption>January 4, 1906 · Public record</figcaption>
           </figure>
         </div>
@@ -193,7 +194,7 @@ export function LegacyExperience() {
             <p className="legacy-scene__eyebrow">1905 · 2026 · Beyond</p>
             <p className="legacy-scene__year">2026</p>
             <h2>The past hands<br />the future the torch.</h2>
-            <a className="legacy-scene__enter" href="#legacy-begins">Enter the next chapter <span>↓</span></a>
+            <a className="legacy-scene__enter" href={siteHref("/#legacy-begins")}>Enter the next chapter <span>↓</span></a>
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { assetHref } from "../../lib/site-urls";
 
 const INTRO_DURATION = 3600;
 
@@ -48,7 +49,7 @@ export function MemberPortalIntro() {
         </div>
 
         <div className="member-gate__seal">
-          <img src="/assets/brand/mystery-school-of-pi.png" alt="" width={922} height={922} />
+          <img src={assetHref("/assets/brand/mystery-school-of-pi.png")} alt="" width={922} height={922} />
         </div>
       </div>
 
