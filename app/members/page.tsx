@@ -11,6 +11,7 @@ import {
 } from "../../lib/member-access";
 import { chatGPTSignOutPath, requireChatGPTUser } from "../chatgpt-auth";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
+import { MemberPortalIntro } from "./MemberPortalIntro";
 import { PortalShell } from "./components/PortalShell";
 
 export const dynamic = "force-dynamic";
@@ -89,7 +90,9 @@ async function MemberPortal() {
   ]);
 
   return (
-    <PortalShell member={member} active="home">
+    <>
+      <MemberPortalIntro />
+      <PortalShell member={member} active="home">
       <header className="portal-page-header">
         <div>
           <p className="section-label">Members’ portal</p>
@@ -165,8 +168,9 @@ async function MemberPortal() {
         </section>
       </div>
 
-      <p className="member-dashboard__security">Private fraternity symbolism remains intentionally omitted until the approved asset is supplied and placed in protected storage.</p>
-    </PortalShell>
+        <p className="member-dashboard__security">The Mystery School mark identifies this protected operating chamber for authorized fraternity members.</p>
+      </PortalShell>
+    </>
   );
 }
 

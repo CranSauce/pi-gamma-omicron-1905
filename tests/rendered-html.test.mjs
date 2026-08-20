@@ -91,16 +91,16 @@ test("keeps every public and protected portal destination routed", async () => {
 });
 
 test("gives the private portal a distinct Mystery School passage", async () => {
-  const [layout, intro, portal, css] = await Promise.all([
-    readFile(new URL("../app/members/layout.tsx", import.meta.url), "utf8"),
+  const [overview, intro, portal, css] = await Promise.all([
+    readFile(new URL("../app/members/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/members/MemberPortalIntro.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/members/components/PortalShell.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
   ]);
 
-  assert.match(layout, /<MemberPortalIntro\s*\/>/);
+  assert.match(overview, /<MemberPortalIntro\s*\/>/);
   assert.match(intro, /^"use client";/);
-  assert.match(intro, /pgo-mystery-school-entry-seen/);
+  assert.doesNotMatch(intro, /sessionStorage/);
   assert.match(intro, /prefers-reduced-motion:\s*reduce/);
   assert.match(intro, /Skip transition/);
   assert.match(intro, /mystery-school-of-pi\.png/);

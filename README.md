@@ -50,9 +50,10 @@ Open [http://localhost:3000/members](http://localhost:3000/members) to demo:
 - the Brotherhood Board; and
 - member and applicant administration.
 
-The Mystery School entry transition plays once per browser session. Use
-[http://localhost:3000/members?intro=1](http://localhost:3000/members?intro=1)
-to deliberately replay it during a presentation.
+The Mystery School entry transition plays after member login and every time the
+Overview page is opened. Return to
+[http://localhost:3000/members](http://localhost:3000/members) to replay it
+during a presentation.
 
 Local demo records are stored in the ignored `.wrangler` development folder.
 They do not change production data. The automatic preview administrator is
