@@ -66,7 +66,18 @@ test("keeps scroll motion progressive and accessible", async () => {
 });
 
 test("keeps every public and protected portal destination routed", async () => {
-  const publicRoutes = ["/", "/history", "/chapters", "/join", "/privacy"];
+  const publicRoutes = [
+    "/",
+    "/about",
+    "/history",
+    "/leadership",
+    "/chapters",
+    "/membership",
+    "/news",
+    "/contact",
+    "/join",
+    "/privacy",
+  ];
   const protectedRouteFiles = [
     "../app/members/page.tsx",
     "../app/members/announcements/page.tsx",
@@ -88,6 +99,28 @@ test("keeps every public and protected portal destination routed", async () => {
   assert.match(portalSource, /href="\/members\/directory"/);
   assert.match(portalSource, /href="\/members\/discuss"/);
   assert.match(portalSource, /href="\/members\/admin"/);
+});
+
+test("surfaces every launch-phase public action and the confirmed 2027 conference", async () => {
+  const [homeResponse, newsResponse, chrome, css] = await Promise.all([
+    render("/"),
+    render("/news"),
+    readFile(new URL("../app/components/SiteChrome.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  const home = await homeResponse.text();
+  const news = await newsResponse.text();
+
+  assert.match(home, /Learn our history/i);
+  assert.match(home, /Membership/);
+  assert.match(home, /Start a chapter/i);
+  assert.match(news, /Charlotte/);
+  assert.match(news, /Dates forthcoming/);
+  assert.match(chrome, /href="\/about"/);
+  assert.match(chrome, /href="\/contact"/);
+  assert.match(css, /\.site-footer__crest img\s*\{[^}]*height:\s*clamp\(/);
+  assert.match(css, /object-fit:\s*contain/);
 });
 
 test("gives the private portal a distinct Mystery School passage", async () => {

@@ -27,6 +27,7 @@ export default function JoinPage() {
         <p className="interior-hero__lede">
           This form begins a conversation. It is not an application, an offer of membership, or a substitute for the fraternity’s official review process.
         </p>
+        <a className="text-link interior-hero__link" href="/membership">Review membership paths and expectations <span aria-hidden="true">↗</span></a>
       </section>
 
       <section className="join-process" aria-labelledby="join-process-title">
@@ -42,7 +43,7 @@ export default function JoinPage() {
         </ol>
       </section>
 
-      <section className="interest-form-shell">
+      <section className="interest-form-shell" id="interest-form">
         <InterestForm />
       </section>
       <SiteFooter />

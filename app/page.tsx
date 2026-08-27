@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { chapters, founders, pillars, timeline } from "../lib/site-content";
+import { chapters, founders, leadership, pillars, publicUpdates, timeline } from "../lib/site-content";
 import { LegacyExperience } from "./components/LegacyExperience";
 import { SiteFooter } from "./components/SiteChrome";
 
@@ -13,6 +13,12 @@ export default function Home() {
   return (
     <main>
       <LegacyExperience />
+
+      <nav className="home-actions" aria-label="Explore Pi Gamma Omicron">
+        <a href="/history"><span>01</span><strong>Learn our history</strong><small>Enter the archive</small></a>
+        <a href="/membership"><span>02</span><strong>Membership</strong><small>Find your path</small></a>
+        <a href="/join"><span>03</span><strong>Start a chapter</strong><small>Build what comes next</small></a>
+      </nav>
 
       <section className="legacy-intro" id="legacy-begins" aria-labelledby="legacy-begins-title">
         <div>
@@ -143,9 +149,28 @@ export default function Home() {
           <h2 id="leadership-title">Stewards of the renewal.</h2>
         </div>
         <div className="leadership-grid">
-          <article><span>President</span><h3>Zeke<br />Lipscomb</h3></article>
-          <article><span>Vice President</span><h3>Kawame<br />Curry</h3></article>
+          {leadership.map((officer) => (
+            <article key={officer.name}>
+              <span>{officer.role}</span>
+              <h3>{officer.name}</h3>
+              <p>{officer.statement}</p>
+            </article>
+          ))}
         </div>
+        <a className="text-link leadership-section__link" href="/leadership">Meet national leadership <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <section className="home-news" aria-labelledby="home-news-title">
+        <div>
+          <p className="section-label">Upcoming · 2027</p>
+          <h2 id="home-news-title">Charlotte is the next gathering place.</h2>
+        </div>
+        <article>
+          <span>{publicUpdates[0].date}</span>
+          <h3>{publicUpdates[0].title}</h3>
+          <p>{publicUpdates[0].description}</p>
+          <a className="button button--paper" href="/news#charlotte-2027">View conference announcement</a>
+        </article>
       </section>
 
       <section className="join-callout" aria-labelledby="join-callout-title">

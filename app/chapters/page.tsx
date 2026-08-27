@@ -67,8 +67,8 @@ export default function ChaptersPage() {
 
       <section className="expansion-callout">
         <p>New chapters should begin with a shared commitment to scholarship, integrity, brotherhood, and meaningful community work.</p>
-        <h2>Build the next chapter.</h2>
-        <a className="button button--scarlet" href="/join">Express chapter interest</a>
+        <h2>Start or reactivate a chapter.</h2>
+        <a className="button button--scarlet" href="/join#interest-form">Express chapter interest</a>
       </section>
       <SiteFooter />
     </main>

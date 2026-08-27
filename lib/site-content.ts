@@ -115,3 +115,62 @@ export const expansionDestinations = [
   "Wilberforce",
   "Virginia",
 ] as const;
+
+export const leadership = [
+  {
+    role: "President",
+    name: "Zeke Lipscomb",
+    initials: "ZL",
+    statement:
+      "Guiding national direction and institutional stewardship as Pi Gamma Omicron advances its renewal.",
+  },
+  {
+    role: "Vice President",
+    name: "Kawame Curry",
+    initials: "KC",
+    statement:
+      "Supporting member operations, communications, and the work of building a durable national foundation.",
+  },
+] as const;
+
+export const membershipPaths = [
+  {
+    number: "01",
+    title: "Collegiate membership",
+    description:
+      "For students seeking a brotherhood shaped by scholarship, integrity, service, and purposeful campus leadership.",
+  },
+  {
+    number: "02",
+    title: "Alumni & graduate membership",
+    description:
+      "For graduates and professionals prepared to strengthen the fraternity’s renewal, mentorship, and community work.",
+  },
+] as const;
+
+export const publicUpdates = [
+  {
+    type: "National conference",
+    date: "2027 · Dates forthcoming",
+    title: "Pi Gamma Omicron is heading to Charlotte.",
+    description:
+      "Charlotte, North Carolina will host the fraternity’s 2027 National Conference. Confirmed dates and registration information will be published when finalized.",
+    href: "/news#charlotte-2027",
+  },
+  {
+    type: "Revival update",
+    date: "The work now",
+    title: "A new digital home for a living legacy.",
+    description:
+      "The fraternity’s public archive, chapter presence, and member infrastructure are being rebuilt as part of the modern renewal.",
+    href: "/news#revival",
+  },
+  {
+    type: "Historical preservation",
+    date: "Research ongoing",
+    title: "The archival record continues to grow.",
+    description:
+      "Newspaper references and fraternity records are being reviewed carefully so verified history can be preserved without filling archival gaps with invention.",
+    href: "/history#archive",
+  },
+] as const;

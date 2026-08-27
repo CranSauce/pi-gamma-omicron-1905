@@ -9,19 +9,23 @@ export function SiteHeader({ tone = "dark" }: { tone?: "dark" | "light" }) {
         <small>Founded 1905</small>
       </a>
       <nav className="site-header__links" aria-label="Primary navigation">
+        <a href="/about">About</a>
         <a href="/history">History</a>
         <a href="/chapters">Chapters</a>
-        <a href="/#pillars">Pillars</a>
-        <a href="/join">Interest</a>
+        <a href="/membership">Membership</a>
+        <a href="/news">News</a>
+        <a href="/contact">Contact</a>
         <a className="site-header__members" href="/members">Members</a>
       </nav>
       <details className="site-header__menu">
         <summary aria-label="Open navigation">Menu</summary>
         <nav aria-label="Mobile navigation">
+          <a href="/about">About</a>
           <a href="/history">History</a>
           <a href="/chapters">Chapters</a>
-          <a href="/#pillars">Pillars</a>
-          <a href="/join">Interest</a>
+          <a href="/membership">Membership</a>
+          <a href="/news">News & events</a>
+          <a href="/contact">Contact</a>
           <a href="/members">Members</a>
         </nav>
       </details>
@@ -33,7 +37,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="site-footer__crest">
-        <img src="/assets/brand/pi-gamma-omicron-crest.png" width={1024} height={1024} alt="" />
+        <img src="/assets/brand/pi-gamma-omicron-crest.png" width={512} height={512} alt="Pi Gamma Omicron crest" />
       </div>
       <div className="site-footer__statement">
         <p>Tenebrae Luci Locum Dabunt</p>
@@ -45,9 +49,12 @@ export function SiteFooter() {
           <span>1905 — 2026 — Beyond</span>
         </div>
         <nav aria-label="Footer navigation">
+          <a href="/about">About</a>
           <a href="/history">History</a>
           <a href="/chapters">Chapters</a>
-          <a href="/join">Interest</a>
+          <a href="/membership">Membership</a>
+          <a href="/news">News</a>
+          <a href="/contact">Contact</a>
           <a href="/privacy">Privacy</a>
           <a href="/members">Members</a>
         </nav>
