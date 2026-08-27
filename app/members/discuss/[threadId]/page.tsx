@@ -1,9 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Vinext Link navigation currently throws at runtime. */
-import { asc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { getDb } from "../../../../db";
-import { discussionReplies, discussionThreads, members } from "../../../../db/schema";
 import { canUseDiscussionBoard, requireActiveMember } from "../../../../lib/member-access";
+import { findDiscussionThread, listDiscussionReplies } from "../../../../lib/portal-data";
 import { PortalShell } from "../../components/PortalShell";
 import { ReplyComposer } from "./ReplyComposer";
 
@@ -20,37 +18,9 @@ export default async function DiscussionThreadPage({ params }: { params: Promise
   const { member } = await requireActiveMember(`/members/discuss/${encodeURIComponent(threadId)}`);
   if (!canUseDiscussionBoard(member.role)) redirect("/members");
 
-  const db = getDb();
-  const [thread] = await db
-    .select({
-      id: discussionThreads.id,
-      title: discussionThreads.title,
-      body: discussionThreads.body,
-      category: discussionThreads.category,
-      locked: discussionThreads.locked,
-      createdAt: discussionThreads.createdAt,
-      author: members.fullName,
-      authorTitle: members.title,
-    })
-    .from(discussionThreads)
-    .leftJoin(members, eq(discussionThreads.authorMemberId, members.id))
-    .where(eq(discussionThreads.id, threadId))
-    .limit(1);
+  const thread = await findDiscussionThread(threadId);
   if (!thread) redirect("/members/discuss");
-
-  const replies = await db
-    .select({
-      id: discussionReplies.id,
-      body: discussionReplies.body,
-      createdAt: discussionReplies.createdAt,
-      author: members.fullName,
-      authorTitle: members.title,
-      authorRole: members.role,
-    })
-    .from(discussionReplies)
-    .leftJoin(members, eq(discussionReplies.authorMemberId, members.id))
-    .where(eq(discussionReplies.threadId, threadId))
-    .orderBy(asc(discussionReplies.createdAt));
+  const replies = await listDiscussionReplies(threadId);
 
   return (
     <PortalShell member={member} active="discuss">

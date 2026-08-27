@@ -8,7 +8,7 @@ import {
   memberRoleLabel,
   type MemberRecord,
 } from "../../../lib/member-access";
-import { chatGPTSignOutPath } from "../../chatgpt-auth";
+import { portalSignOutPath } from "../../../lib/portal-auth";
 
 export function PortalShell({
   member,
@@ -49,7 +49,7 @@ export function PortalShell({
 
         <div className="portal-sidebar__actions">
           <a href="/">Public website</a>
-          <a href={chatGPTSignOutPath("/")}>Sign out</a>
+          <a href={portalSignOutPath("/")}>Sign out</a>
         </div>
       </aside>
 

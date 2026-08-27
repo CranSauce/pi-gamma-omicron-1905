@@ -1,6 +1,5 @@
-import { getDb } from "../../../db";
-import { discussionThreads } from "../../../db/schema";
 import { canUseDiscussionBoard, getAuthenticatedMember } from "../../../lib/member-access";
+import { createDiscussionThread } from "../../../lib/portal-data";
 
 function clean(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -22,7 +21,7 @@ export async function POST(request: Request) {
   if (!title || !body) return Response.json({ error: "A title and opening message are required." }, { status: 400 });
 
   const id = crypto.randomUUID();
-  await getDb().insert(discussionThreads).values({
+  await createDiscussionThread({
     id,
     title,
     body,

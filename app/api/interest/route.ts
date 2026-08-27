@@ -1,5 +1,5 @@
-import { getDb } from "../../../db";
-import { interests } from "../../../db/schema";
+import { createInterest } from "../../../lib/portal-data";
+import { SupabaseConfigurationError } from "../../../lib/supabase/config";
 
 type InterestPayload = Record<string, unknown> & {
   startedAt?: number;
@@ -51,8 +51,7 @@ export async function POST(request: Request) {
       return Response.json({ error: "Consent is required before submitting." }, { status: 400 });
     }
 
-    const db = getDb();
-    await db.insert(interests).values({
+    await createInterest({
       id: crypto.randomUUID(),
       fullName: clean(payload.fullName, 120),
       preferredName: clean(payload.preferredName, 80),
@@ -76,8 +75,7 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unexpected error";
-    const unavailable = message.includes("no such table") || message.includes("binding `DB`");
+    const unavailable = error instanceof SupabaseConfigurationError;
     return Response.json(
       { error: unavailable ? "The interest system is being prepared. Please try again shortly." : "We could not submit your interest right now." },
       { status: 500 },

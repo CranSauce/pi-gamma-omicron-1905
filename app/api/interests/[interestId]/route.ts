@@ -1,7 +1,5 @@
-import { eq } from "drizzle-orm";
-import { getDb } from "../../../../db";
-import { interests } from "../../../../db/schema";
 import { canManageMembers, getAuthenticatedMember } from "../../../../lib/member-access";
+import { updateInterestStatus } from "../../../../lib/portal-data";
 
 const statuses = new Set(["new", "under_review", "interview", "accepted", "declined", "archived"]);
 
@@ -17,10 +15,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ in
   const status = typeof payload.status === "string" ? payload.status.trim() : "";
   if (!statuses.has(status)) return Response.json({ error: "Select a valid application stage." }, { status: 400 });
 
-  await getDb().update(interests).set({
-    status,
-    updatedAt: new Date().toISOString(),
-  }).where(eq(interests.id, interestId));
+  await updateInterestStatus(interestId, status);
 
   return Response.json({ message: "Interest record updated." });
 }

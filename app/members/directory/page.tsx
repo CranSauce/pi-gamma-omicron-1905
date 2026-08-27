@@ -1,12 +1,10 @@
-import { asc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { getDb } from "../../../db";
-import { members } from "../../../db/schema";
 import {
   canUseFraternalDirectory,
   memberRoleLabel,
   requireActiveMember,
 } from "../../../lib/member-access";
+import { listActiveMembers } from "../../../lib/portal-data";
 import { PortalShell } from "../components/PortalShell";
 
 export const dynamic = "force-dynamic";
@@ -21,11 +19,7 @@ export default async function DirectoryPage() {
   const { member } = await requireActiveMember("/members/directory");
   if (!canUseFraternalDirectory(member.role)) redirect("/members");
 
-  const directory = await getDb()
-    .select()
-    .from(members)
-    .where(eq(members.active, true))
-    .orderBy(asc(members.chapter), asc(members.fullName));
+  const directory = await listActiveMembers();
   const visibleMembers = directory.filter((entry) => entry.role !== "applicant");
   const chapters = [...new Set(visibleMembers.map((entry) => entry.chapter || "National"))];
 

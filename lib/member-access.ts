@@ -1,13 +1,11 @@
-import { eq } from "drizzle-orm";
-import { env } from "cloudflare:workers";
 import { redirect } from "next/navigation";
-import { getDb } from "../db";
-import { members } from "../db/schema";
 import {
-  getChatGPTUser,
-  requireChatGPTUser,
-  type ChatGPTUser,
-} from "../app/chatgpt-auth";
+  createMemberRecord,
+  findMemberRecordByEmail,
+  updateMemberRecord,
+  type MemberRecord,
+} from "./portal-data";
+import { getPortalUser, requirePortalUser, type PortalUser } from "./portal-auth";
 
 export const memberRoles = [
   "super_admin",
@@ -19,7 +17,7 @@ export const memberRoles = [
 ] as const;
 
 export type MemberRole = (typeof memberRoles)[number];
-export type MemberRecord = typeof members.$inferSelect;
+export type { MemberRecord };
 
 export const roleLabels: Record<MemberRole, string> = {
   super_admin: "Super administrator",
@@ -56,71 +54,45 @@ export function canUseDiscussionBoard(role: string) {
 
 export async function findMemberByEmail(email: string, displayName?: string) {
   const normalizedEmail = email.trim().toLowerCase();
-  const db = getDb();
-  let [member] = await db
-    .select()
-    .from(members)
-    .where(eq(members.email, normalizedEmail))
-    .limit(1);
+  let member = await findMemberRecordByEmail(normalizedEmail);
 
   if (!bootstrapSuperAdminEmails().has(normalizedEmail)) return member;
 
-  const updatedAt = new Date().toISOString();
   if (member) {
     if (member.role !== "super_admin" || !member.active) {
-      await db
-        .update(members)
-        .set({
-          role: "super_admin",
-          title: member.title || "Site Administrator",
-          active: true,
-          updatedAt,
-        })
-        .where(eq(members.id, member.id));
-      member = {
-        ...member,
+      member = await updateMemberRecord(member.id, {
         role: "super_admin",
         title: member.title || "Site Administrator",
         active: true,
-        updatedAt,
-      };
+      });
     }
     return member;
   }
 
-  await db
-    .insert(members)
-    .values({
+  try {
+    return await createMemberRecord({
       email: normalizedEmail,
       fullName: memberDisplayName(normalizedEmail, displayName),
       role: "super_admin",
       title: "Site Administrator",
       chapter: "National",
       active: true,
-    })
-    .onConflictDoNothing({ target: members.email });
-
-  [member] = await db
-    .select()
-    .from(members)
-    .where(eq(members.email, normalizedEmail))
-    .limit(1);
-  return member;
+    });
+  } catch (error) {
+    member = await findMemberRecordByEmail(normalizedEmail);
+    if (member) return member;
+    throw error;
+  }
 }
 
 function bootstrapSuperAdminEmails() {
-  const rawValue = (env as unknown as Record<string, unknown>)[
-    "PORTAL_SUPER_ADMIN_EMAILS"
-  ];
   const emails = new Set(
-    (typeof rawValue === "string" ? rawValue : "")
+    (process.env.PORTAL_SUPER_ADMIN_EMAILS ?? "")
       .split(/[\s,;]+/)
       .map((value) => value.trim().toLowerCase())
       .filter(Boolean),
   );
-  if (process.env.NODE_ENV !== "production") {
-    emails.add("portal-preview@localhost.invalid");
-  }
+  if (process.env.NODE_ENV !== "production") emails.add("portal-preview@localhost.invalid");
   return emails;
 }
 
@@ -136,32 +108,29 @@ function memberDisplayName(email: string, displayName?: string) {
     .join(" ") || "Site Administrator";
 }
 
-async function bindStableUserId(member: MemberRecord, user: ChatGPTUser) {
+async function bindStableUserId(member: MemberRecord, user: PortalUser) {
   if (member.userId === user.userId) return member;
-
-  const db = getDb();
-  await db
-    .update(members)
-    .set({ userId: user.userId, updatedAt: new Date().toISOString() })
-    .where(eq(members.id, member.id));
-  return { ...member, userId: user.userId };
+  return updateMemberRecord(member.id, { userId: user.userId });
 }
 
 export async function getAuthenticatedMember() {
-  const user = await getChatGPTUser();
+  const user = await getPortalUser();
   if (!user) return { user: null, member: null };
 
   const member = await findMemberByEmail(user.email, user.displayName);
   if (!member?.active) return { user, member: null };
-
   return { user, member: await bindStableUserId(member, user) };
 }
 
 export async function requireActiveMember(returnTo: string) {
-  const user = await requireChatGPTUser(returnTo);
-  const member = await findMemberByEmail(user.email, user.displayName);
+  const user = await requirePortalUser(returnTo);
+  let member: MemberRecord | undefined;
+  try {
+    member = await findMemberByEmail(user.email, user.displayName);
+  } catch {
+    redirect("/members?data_error=configuration");
+  }
   if (!member?.active) redirect("/members");
-
   return { user, member: await bindStableUserId(member, user) };
 }
 

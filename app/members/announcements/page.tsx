@@ -1,7 +1,5 @@
-import { and, desc, eq, inArray } from "drizzle-orm";
-import { getDb } from "../../../db";
-import { announcements, members } from "../../../db/schema";
 import { canPublishAnnouncements, requireActiveMember } from "../../../lib/member-access";
+import { listAnnouncements } from "../../../lib/portal-data";
 import { PortalShell } from "../components/PortalShell";
 import { AnnouncementComposer } from "./AnnouncementComposer";
 
@@ -19,20 +17,7 @@ export default async function AnnouncementsPage() {
   if (canPublishAnnouncements(member.role)) audiences.push("officers");
   if (member.chapter) audiences.push(`chapter:${member.chapter}`);
 
-  const rows = await getDb()
-    .select({
-      id: announcements.id,
-      title: announcements.title,
-      body: announcements.body,
-      audience: announcements.audience,
-      createdAt: announcements.createdAt,
-      author: members.fullName,
-      authorTitle: members.title,
-    })
-    .from(announcements)
-    .leftJoin(members, eq(announcements.authorMemberId, members.id))
-    .where(and(eq(announcements.published, true), inArray(announcements.audience, audiences)))
-    .orderBy(desc(announcements.createdAt));
+  const rows = await listAnnouncements(audiences);
 
   return (
     <PortalShell member={member} active="announcements">

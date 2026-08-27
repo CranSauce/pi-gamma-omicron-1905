@@ -1,6 +1,5 @@
-import { getDb } from "../../../db";
-import { announcements } from "../../../db/schema";
 import { canPublishAnnouncements, getAuthenticatedMember } from "../../../lib/member-access";
+import { createAnnouncement } from "../../../lib/portal-data";
 
 type AnnouncementPayload = {
   title?: unknown;
@@ -29,7 +28,7 @@ export async function POST(request: Request) {
   if (requestedAudience === "officers") audience = "officers";
   if (requestedAudience === "chapter" && session.member.chapter) audience = `chapter:${session.member.chapter}`;
 
-  await getDb().insert(announcements).values({
+  await createAnnouncement({
     id: crypto.randomUUID(),
     title,
     body,

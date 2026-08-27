@@ -41,8 +41,8 @@ while presenting the site. Stop the server with `Ctrl+C` when finished.
 
 ### Local members-area access
 
-Local development automatically creates a safe preview administrator account.
-Open [http://localhost:3000/members](http://localhost:3000/members) to demo:
+Complete [the Supabase setup](docs/supabase-production-setup.md), then open
+[http://localhost:3000/members](http://localhost:3000/members) to demo:
 
 - the member dashboard;
 - announcements;
@@ -55,9 +55,9 @@ Overview page is opened. Return to
 [http://localhost:3000/members](http://localhost:3000/members) to replay it
 during a presentation.
 
-Local demo records are stored in the ignored `.wrangler` development folder.
-They do not change production data. The automatic preview administrator is
-disabled in production.
+When Supabase values are not present, local development uses a safe preview
+identity but does not fabricate or write member data. Pull the approved Vercel
+development values into an ignored `.env.local` file to use the complete portal.
 
 ## Suggested live-demo route
 
@@ -116,15 +116,14 @@ npm run dev
 ## Architecture
 
 - Vinext, React 19, and TypeScript
-- Cloudflare Workers-compatible server output
-- Drizzle ORM with Cloudflare D1 persistence
-- Sign in with ChatGPT for the hosted members area
+- Vercel server output with a Cloudflare-compatible development path
+- Supabase Postgres persistence with server-only data access
+- Google authentication through Supabase Auth
 - Role-based access for super administrators, national officers, chapter
   officers, brothers, alumni, and applicants
 
-This project is not currently wired to Supabase. Local development uses a
-project-local D1 simulation, while the hosted site uses its managed Cloudflare
-D1 database.
+Production setup and verification are documented in
+[`docs/supabase-production-setup.md`](docs/supabase-production-setup.md).
 
 ## Important files
 
@@ -132,7 +131,8 @@ D1 database.
 - `app/components/LegacyExperience.tsx` — cinematic scroll experience
 - `app/members/` — protected member portal
 - `app/api/` — interest, member, announcement, and discussion APIs
-- `db/schema.ts` — persistent data model
+- `supabase/migrations/` — production Postgres schema and access controls
+- `lib/portal-data.ts` — server-only portal data repository
 - `app/globals.css` — visual system and responsive behavior
 
 ## Privacy

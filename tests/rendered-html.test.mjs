@@ -144,3 +144,23 @@ test("gives the private portal a distinct Mystery School passage", async () => {
   assert.match(css, /@keyframes member-gate-seal/);
   assert.match(css, /html\.member-intro-locked/);
 });
+
+test("uses a private Supabase boundary for production portal data", async () => {
+  const [migration, dataLayer, authLayer, interestRoute, memberResponse] = await Promise.all([
+    readFile(new URL("../supabase/migrations/202608270001_portal_schema.sql", import.meta.url), "utf8"),
+    readFile(new URL("../lib/portal-data.ts", import.meta.url), "utf8"),
+    readFile(new URL("../lib/portal-auth.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/interest/route.ts", import.meta.url), "utf8"),
+    render("/members"),
+  ]);
+
+  assert.equal(memberResponse.status, 200);
+  assert.match(await memberResponse.text(), /Continue with Google|sign-in is not ready/i);
+  assert.match(migration, /alter table public\.interests enable row level security/i);
+  assert.match(migration, /revoke all on table public\.members from anon, authenticated/i);
+  assert.doesNotMatch(dataLayer, /cloudflare:workers|getDb|drizzle-orm/);
+  assert.match(authLayer, /auth\.getUser\(\)/);
+  assert.match(authLayer, /\/auth\/sign-in\?next=/);
+  assert.match(interestRoute, /createInterest/);
+  assert.doesNotMatch(interestRoute, /getDb|cloudflare:workers/);
+});

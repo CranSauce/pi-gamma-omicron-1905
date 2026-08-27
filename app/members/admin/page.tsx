@@ -1,7 +1,5 @@
-import { desc } from "drizzle-orm";
-import { getDb } from "../../../db";
-import { interests, members } from "../../../db/schema";
 import { requireMemberManager } from "../../../lib/member-access";
+import { listAllMembers, listInterests } from "../../../lib/portal-data";
 import { PortalShell } from "../components/PortalShell";
 import { AdministrationPanels } from "./AdministrationPanels";
 
@@ -15,21 +13,9 @@ export const metadata = {
 
 export default async function MemberAdministrationPage() {
   const { member } = await requireMemberManager("/members/admin");
-  const db = getDb();
   const [memberRows, interestRows] = await Promise.all([
-    db.select().from(members).orderBy(desc(members.active), members.fullName),
-    db.select({
-      id: interests.id,
-      fullName: interests.fullName,
-      email: interests.email,
-      institution: interests.institution,
-      institutionType: interests.institutionType,
-      chapterInterest: interests.chapterInterest,
-      currentStatus: interests.currentStatus,
-      whyInterested: interests.whyInterested,
-      status: interests.status,
-      createdAt: interests.createdAt,
-    }).from(interests).orderBy(desc(interests.createdAt)).limit(100),
+    listAllMembers(),
+    listInterests(100),
   ]);
 
   return (

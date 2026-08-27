@@ -1,11 +1,9 @@
-import { eq } from "drizzle-orm";
-import { getDb } from "../../../../db";
-import { members } from "../../../../db/schema";
 import {
   canManageMembers,
   getAuthenticatedMember,
   isMemberRole,
 } from "../../../../lib/member-access";
+import { findMemberRecordById, updateMemberRecord } from "../../../../lib/portal-data";
 
 function clean(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -26,8 +24,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ me
   const role = clean(payload.role, 40);
   if (!isMemberRole(role)) return Response.json({ error: "Select a valid member role." }, { status: 400 });
 
-  const db = getDb();
-  const [target] = await db.select().from(members).where(eq(members.id, id)).limit(1);
+  const target = await findMemberRecordById(id);
   if (!target) return Response.json({ error: "Member not found." }, { status: 404 });
   if ((target.role === "super_admin" || role === "super_admin") && session.member.role !== "super_admin") {
     return Response.json({ error: "Only a super administrator may change that record." }, { status: 403 });
@@ -38,15 +35,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ me
     return Response.json({ error: "You cannot deactivate your own account." }, { status: 409 });
   }
 
-  await db.update(members).set({
+  await updateMemberRecord(id, {
     role,
     title: clean(payload.title, 120),
     chapter: clean(payload.chapter, 120),
     location: clean(payload.location, 120),
     bio: clean(payload.bio, 1200),
     active,
-    updatedAt: new Date().toISOString(),
-  }).where(eq(members.id, id));
+  });
 
   return Response.json({ message: "Member updated." });
 }

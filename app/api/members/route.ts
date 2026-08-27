@@ -1,11 +1,9 @@
-import { eq } from "drizzle-orm";
-import { getDb } from "../../../db";
-import { members } from "../../../db/schema";
 import {
   canManageMembers,
   getAuthenticatedMember,
   isMemberRole,
 } from "../../../lib/member-access";
+import { createMemberRecord, findMemberRecordByEmail } from "../../../lib/portal-data";
 
 function clean(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -30,11 +28,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "Only a super administrator may grant that role." }, { status: 403 });
   }
 
-  const db = getDb();
-  const [existing] = await db.select({ id: members.id }).from(members).where(eq(members.email, email)).limit(1);
+  const existing = await findMemberRecordByEmail(email);
   if (existing) return Response.json({ error: "That email already has a member record." }, { status: 409 });
 
-  await db.insert(members).values({
+  await createMemberRecord({
     email,
     fullName,
     role,

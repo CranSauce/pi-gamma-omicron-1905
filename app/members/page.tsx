@@ -1,7 +1,4 @@
 /* eslint-disable @next/next/no-html-link-for-pages -- Vinext Link navigation currently throws at runtime. */
-import { and, count, desc, eq, inArray } from "drizzle-orm";
-import { getDb } from "../../db";
-import { announcements, discussionThreads, interests, members } from "../../db/schema";
 import {
   canManageMembers,
   canPublishAnnouncements,
@@ -9,7 +6,14 @@ import {
   canUseFraternalDirectory,
   findMemberByEmail,
 } from "../../lib/member-access";
-import { chatGPTSignOutPath, requireChatGPTUser } from "../chatgpt-auth";
+import {
+  countActiveMembers,
+  countNewInterests,
+  listAnnouncements,
+  listDiscussionThreads,
+  type MemberRecord,
+} from "../../lib/portal-data";
+import { getPortalUser, portalSignInPath, portalSignOutPath } from "../../lib/portal-auth";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { MemberPortalIntro } from "./MemberPortalIntro";
 import { PortalShell } from "./components/PortalShell";
@@ -22,9 +26,31 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-async function MemberPortal() {
-  const user = await requireChatGPTUser("/members");
-  let member: typeof members.$inferSelect | undefined;
+async function MemberPortal({ authError }: { authError?: string }) {
+  const user = await getPortalUser();
+  if (!user) {
+    return (
+      <main className="interior interior--dark">
+        <SiteHeader />
+        <section className="access-pending">
+          <p className="section-label">Members’ chamber · secure access</p>
+          <h1>{authError ? "Member sign-in is not ready yet." : "Enter the private members’ chamber."}</h1>
+          <p>
+            {authError
+              ? "The Supabase or Google authentication settings still need to be completed by the site administrator."
+              : "Authorized members use their approved Google email. Access is matched against the private fraternity directory after sign-in."}
+          </p>
+          <div>
+            {!authError && <a className="button button--scarlet" href={portalSignInPath("/members")}>Continue with Google</a>}
+            <a className="text-link text-link--light" href="/">Return to public website</a>
+          </div>
+        </section>
+        <SiteFooter />
+      </main>
+    );
+  }
+
+  let member: MemberRecord | undefined;
 
   try {
     member = await findMemberByEmail(user.email, user.displayName);
@@ -44,7 +70,7 @@ async function MemberPortal() {
           </p>
           <div>
             <a className="button button--scarlet" href="/join">Contact through interest form</a>
-            <a className="text-link text-link--light" href={chatGPTSignOutPath("/")}>Sign out</a>
+            <a className="text-link text-link--light" href={portalSignOutPath("/")}>Sign out</a>
           </div>
         </section>
         <SiteFooter />
@@ -52,41 +78,14 @@ async function MemberPortal() {
     );
   }
 
-  const db = getDb();
   const announcementAudiences = ["all"];
   if (canPublishAnnouncements(member.role)) announcementAudiences.push("officers");
   if (member.chapter) announcementAudiences.push(`chapter:${member.chapter}`);
-  const [memberTotalResult, announcementRows, discussionRows, openInterestResult] = await Promise.all([
-    db.select({ value: count() }).from(members).where(eq(members.active, true)),
-    db
-      .select({
-        id: announcements.id,
-        title: announcements.title,
-        body: announcements.body,
-        audience: announcements.audience,
-        createdAt: announcements.createdAt,
-        author: members.fullName,
-      })
-      .from(announcements)
-      .leftJoin(members, eq(announcements.authorMemberId, members.id))
-      .where(and(eq(announcements.published, true), inArray(announcements.audience, announcementAudiences)))
-      .orderBy(desc(announcements.createdAt))
-      .limit(3),
-    db
-      .select({
-        id: discussionThreads.id,
-        title: discussionThreads.title,
-        category: discussionThreads.category,
-        createdAt: discussionThreads.createdAt,
-        author: members.fullName,
-      })
-      .from(discussionThreads)
-      .leftJoin(members, eq(discussionThreads.authorMemberId, members.id))
-      .orderBy(desc(discussionThreads.pinned), desc(discussionThreads.updatedAt))
-      .limit(4),
-    canManageMembers(member.role)
-      ? db.select({ value: count() }).from(interests).where(eq(interests.status, "new"))
-      : Promise.resolve([{ value: 0 }]),
+  const [memberTotal, announcementRows, discussionRows, openInterestTotal] = await Promise.all([
+    countActiveMembers(),
+    listAnnouncements(announcementAudiences, 3),
+    listDiscussionThreads(4),
+    canManageMembers(member.role) ? countNewInterests() : Promise.resolve(0),
   ]);
 
   return (
@@ -104,11 +103,11 @@ async function MemberPortal() {
       </header>
 
       <section className="portal-metrics" aria-label="Portal summary">
-        <article><span>Active directory</span><strong>{memberTotalResult[0]?.value ?? 0}</strong><small>Authorized accounts</small></article>
+        <article><span>Active directory</span><strong>{memberTotal}</strong><small>Authorized accounts</small></article>
         <article><span>Announcements</span><strong>{announcementRows.length}</strong><small>Most recent notices</small></article>
         <article><span>Board activity</span><strong>{discussionRows.length}</strong><small>Recent conversations</small></article>
         {canManageMembers(member.role) && (
-          <article><span>Interest queue</span><strong>{openInterestResult[0]?.value ?? 0}</strong><small>Awaiting review</small></article>
+          <article><span>Interest queue</span><strong>{openInterestTotal}</strong><small>Awaiting review</small></article>
         )}
       </section>
 
@@ -185,6 +184,7 @@ function formatDate(value: string) {
     : new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(date);
 }
 
-export default function MembersPage() {
-  return <MemberPortal />;
+export default async function MembersPage({ searchParams }: { searchParams: Promise<{ auth_error?: string }> }) {
+  const { auth_error: authError } = await searchParams;
+  return <MemberPortal authError={authError} />;
 }

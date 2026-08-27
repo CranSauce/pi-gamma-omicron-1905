@@ -1,8 +1,6 @@
-import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { getDb } from "../../../db";
-import { discussionReplies, discussionThreads, members } from "../../../db/schema";
 import { canUseDiscussionBoard, requireActiveMember } from "../../../lib/member-access";
+import { listDiscussionReplies, listDiscussionThreads } from "../../../lib/portal-data";
 import { PortalShell } from "../components/PortalShell";
 import { DiscussionComposer } from "./DiscussionComposer";
 
@@ -18,25 +16,9 @@ export default async function DiscussionBoardPage() {
   const { member } = await requireActiveMember("/members/discuss");
   if (!canUseDiscussionBoard(member.role)) redirect("/members");
 
-  const db = getDb();
   const [threads, replies] = await Promise.all([
-    db
-      .select({
-        id: discussionThreads.id,
-        title: discussionThreads.title,
-        body: discussionThreads.body,
-        category: discussionThreads.category,
-        pinned: discussionThreads.pinned,
-        locked: discussionThreads.locked,
-        createdAt: discussionThreads.createdAt,
-        updatedAt: discussionThreads.updatedAt,
-        author: members.fullName,
-        authorTitle: members.title,
-      })
-      .from(discussionThreads)
-      .leftJoin(members, eq(discussionThreads.authorMemberId, members.id))
-      .orderBy(desc(discussionThreads.pinned), desc(discussionThreads.updatedAt)),
-    db.select({ threadId: discussionReplies.threadId }).from(discussionReplies),
+    listDiscussionThreads(),
+    listDiscussionReplies(),
   ]);
   const replyCounts = replies.reduce<Record<string, number>>((counts, reply) => {
     counts[reply.threadId] = (counts[reply.threadId] || 0) + 1;
