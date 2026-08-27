@@ -47,6 +47,12 @@ export default defineConfig(async () => {
   const { cloudflare } = await import("@cloudflare/vite-plugin");
 
   return {
+    // The Cloudflare-only `cloudflare:workers` module is unavailable in
+    // Vercel's Node runtime. Keep the local Cloudflare binding implementation,
+    // but provide a build-safe runtime shim for Vercel output.
+    ...(isVercelBuild
+      ? { resolve: { alias: { "cloudflare:workers": "./lib/vercel-cloudflare-env.ts" } } }
+      : {}),
     server: {
       // v0 Preview serves the app through a forwarded *.v0.build origin.
       // Allow that origin so the client bundle and HMR runtime can load.
