@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const fallbackSiteUrl = "https://pgo1905.com";
+const fallbackSiteUrl = "https://www.pgo1905.com";
 
 function normalizeSiteUrl(value: string | undefined) {
   if (!value) return fallbackSiteUrl;

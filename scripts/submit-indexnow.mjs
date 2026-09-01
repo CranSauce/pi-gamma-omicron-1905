@@ -1,4 +1,4 @@
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://pgo1905.com").replace(/\/$/, "");
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.pgo1905.com").replace(/\/$/, "");
 const host = new URL(siteUrl).host;
 const key = "b51c62bd83e84658a9c80fe7dc3d49b1";
 const paths = ["/", "/about", "/history", "/leadership", "/chapters", "/membership", "/news", "/contact", "/join"];
