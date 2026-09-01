@@ -1,16 +1,23 @@
 import { pillars } from "../../lib/site-content";
+import { createPageMetadata, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
-export const metadata = {
+const description =
+  "Learn who Pi Gamma Omicron is, its mission, motto, founding purpose, and the principles guiding the renewal of this historic Black collegiate fraternity.";
+
+export const metadata = createPageMetadata({
   title: "About Pi Gamma Omicron",
-  description:
-    "Learn who Pi Gamma Omicron is, the mission guiding its renewal, and the principles that have carried the fraternity since 1905.",
-};
+  description,
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (
     <main className="interior interior--paper">
       <SiteHeader tone="light" />
+      <Breadcrumbs current="About" path="/about" />
+      <JsonLd data={webPageJsonLd({ path: "/about", title: "About Pi Gamma Omicron", description, type: "AboutPage" })} />
       <section className="interior-hero interior-hero--about">
         <p className="section-label">About Pi Gamma Omicron</p>
         <h1>Rooted in history.<br />Rebuilt for what comes next.</h1>

@@ -1,40 +1,57 @@
-import type { Metadata } from "next";
-import { headers } from "next/headers";
+import type { Metadata, Viewport } from "next";
+import { absoluteUrl, defaultDescription, siteName, siteUrl } from "../lib/seo";
 import "./globals.css";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const origin = `${protocol}://${host}`;
-  const socialImage = `${origin}/og.png`;
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  applicationName: siteName,
+  title: {
+    default: `${siteName} | Founded 1905`,
+    template: `%s | ${siteName}`,
+  },
+  description: defaultDescription,
+  category: "Fraternal organization",
+  creator: siteName,
+  publisher: siteName,
+  referrer: "origin-when-cross-origin",
+  formatDetection: { email: false, address: false, telephone: false },
+  icons: {
+    icon: "/assets/brand/pi-gamma-omicron-crest.png",
+    shortcut: "/assets/brand/pi-gamma-omicron-crest.png",
+    apple: "/assets/brand/pi-gamma-omicron-crest.png",
+  },
+  manifest: "/manifest.webmanifest",
+  alternates: {
+    types: { "application/rss+xml": absoluteUrl("/feed.xml") },
+  },
+  openGraph: {
+    title: `${siteName} | Founded 1905`,
+    description: defaultDescription,
+    siteName,
+    locale: "en_US",
+    type: "website",
+    images: [{
+      url: absoluteUrl("/og.png"),
+      width: 1536,
+      height: 1024,
+      alt: "Pi Gamma Omicron Fraternity — Founded 1905",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteName} | Founded 1905`,
+    description: defaultDescription,
+    images: [absoluteUrl("/og.png")],
+  },
+};
 
-  return {
-    metadataBase: new URL(origin),
-    title: {
-      default: "Pi Gamma Omicron Fraternity",
-      template: "%s | Pi Gamma Omicron",
-    },
-    description:
-      "The digital home and living archive of Pi Gamma Omicron Fraternity, founded in 1905.",
-    icons: {
-      icon: "/assets/brand/pi-gamma-omicron-crest.png",
-      shortcut: "/assets/brand/pi-gamma-omicron-crest.png",
-    },
-    openGraph: {
-      title: "Pi Gamma Omicron Fraternity",
-      description: "Founded in 1905. Brotherhood · Scholarship · Integrity · Uplift.",
-      type: "website",
-      images: [{ url: socialImage, width: 1536, height: 1024, alt: "Pi Gamma Omicron Fraternity — Founded 1905" }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Pi Gamma Omicron Fraternity",
-      description: "Founded in 1905. Brotherhood · Scholarship · Integrity · Uplift.",
-      images: [socialImage],
-    },
-  };
-}
+export const viewport: Viewport = {
+  colorScheme: "dark light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#eee9df" },
+    { media: "(prefers-color-scheme: dark)", color: "#050505" },
+  ],
+};
 
 export default function RootLayout({
   children,

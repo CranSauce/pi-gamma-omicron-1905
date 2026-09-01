@@ -1,11 +1,16 @@
 import { membershipPaths, pillars } from "../../lib/site-content";
+import { createPageMetadata, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
-export const metadata = {
-  title: "Membership",
-  description:
-    "Explore collegiate and alumni membership pathways, expectations, and the public interest process for Pi Gamma Omicron Fraternity.",
-};
+const description =
+  "Learn about Pi Gamma Omicron collegiate and alumni membership, fraternity expectations, qualifications, and the official public interest process.";
+
+export const metadata = createPageMetadata({
+  title: "Membership, Qualifications & Interest Process",
+  description,
+  path: "/membership",
+});
 
 const process = [
   ["Interest", "Share your background, institution, and reason for seeking Pi Gamma Omicron."],
@@ -18,6 +23,8 @@ export default function MembershipPage() {
   return (
     <main className="interior interior--dark">
       <SiteHeader />
+      <Breadcrumbs current="Membership" path="/membership" tone="dark" />
+      <JsonLd data={webPageJsonLd({ path: "/membership", title: "Pi Gamma Omicron Membership", description })} />
       <section className="interior-hero interior-hero--membership">
         <p className="section-label">Membership</p>
         <h1>Brotherhood with<br />work behind it.</h1>

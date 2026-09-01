@@ -1,10 +1,15 @@
+import { createPageMetadata, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
-export const metadata = {
-  title: "Contact",
-  description:
-    "Find the right path for membership, chapter expansion, general, media, and historical research inquiries to Pi Gamma Omicron.",
-};
+const description =
+  "Contact Pi Gamma Omicron for membership, chapter expansion, media, historical research, and general fraternity inquiries.";
+
+export const metadata = createPageMetadata({
+  title: "Contact Pi Gamma Omicron",
+  description,
+  path: "/contact",
+});
 
 const inquiryPaths = [
   {
@@ -34,6 +39,8 @@ export default function ContactPage() {
   return (
     <main className="interior interior--paper">
       <SiteHeader tone="light" />
+      <Breadcrumbs current="Contact" path="/contact" />
+      <JsonLd data={webPageJsonLd({ path: "/contact", title: "Contact Pi Gamma Omicron", description, type: "ContactPage" })} />
       <section className="interior-hero interior-hero--contact">
         <p className="section-label">Contact Pi Gamma Omicron</p>
         <h1>Start with the<br />right conversation.</h1>

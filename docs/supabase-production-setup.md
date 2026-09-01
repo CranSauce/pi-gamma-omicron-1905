@@ -52,7 +52,7 @@ In **Vercel → Project → Settings → Environment Variables**, add:
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key | Browser-safe |
 | `SUPABASE_SECRET_KEY` | Supabase secret key | Server only |
 | `PORTAL_SUPER_ADMIN_EMAILS` | Comma-separated approved site-admin emails | Server only |
-| `NEXT_PUBLIC_SITE_URL` | Full production origin, such as `https://example.org` | Browser-safe |
+| `NEXT_PUBLIC_SITE_URL` | Full production origin: `https://pgo1905.com` | Browser-safe |
 
 For this project, add `atlankinlogs@gmail.com` to
 `PORTAL_SUPER_ADMIN_EMAILS`. The first successful Google sign-in with an email

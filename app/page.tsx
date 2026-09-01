@@ -1,17 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 import { chapters, founders, leadership, pillars, publicUpdates, timeline } from "../lib/site-content";
+import { createPageMetadata, organizationJsonLd, webPageJsonLd, websiteJsonLd } from "../lib/seo";
 import { LegacyExperience } from "./components/LegacyExperience";
+import { JsonLd } from "./components/Seo";
 import { SiteFooter } from "./components/SiteChrome";
 
-export const metadata = {
-  title: "Founded 1905",
-  description:
-    "Founded at The Ohio State University in 1905. Discover the history, mission, pillars, chapters, and renewal of Pi Gamma Omicron Fraternity.",
-};
+const description =
+  "Pi Gamma Omicron is a historic Black collegiate fraternity founded by eleven Black students at The Ohio State University in 1905. Explore its history, chapters, membership, and renewal.";
+
+export const metadata = createPageMetadata({
+  title: "Historic Black Collegiate Fraternity Founded in 1905",
+  description,
+  path: "/",
+});
 
 export default function Home() {
   return (
     <main>
+      <JsonLd data={[
+        organizationJsonLd,
+        websiteJsonLd,
+        webPageJsonLd({ path: "/", title: "Pi Gamma Omicron Fraternity", description }),
+      ]} />
       <LegacyExperience />
 
       <nav className="home-actions" aria-label="Explore Pi Gamma Omicron">
@@ -34,6 +44,34 @@ export default function Home() {
           </p>
           <a className="text-link" href="/history">Explore the complete history <span aria-hidden="true">↗</span></a>
         </div>
+      </section>
+
+      <section className="entity-summary" aria-labelledby="entity-summary-title">
+        <div className="entity-summary__heading">
+          <p className="section-label">Pi Gamma Omicron at a glance</p>
+          <h2 id="entity-summary-title">The essential record.</h2>
+          <p>
+            Concise answers to the most common questions about the fraternity, its founding, and its modern renewal.
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>What is Pi Gamma Omicron?</dt>
+            <dd>A historic Black collegiate fraternity built around brotherhood, scholarship, integrity, and uplift.</dd>
+          </div>
+          <div>
+            <dt>When and where was ΠΓΟ founded?</dt>
+            <dd>January 1, 1905, at The Ohio State University in Columbus, Ohio.</dd>
+          </div>
+          <div>
+            <dt>Who founded Pi Gamma Omicron?</dt>
+            <dd>Eleven Black students whose names are preserved in fraternity records and Ohio State archival research.</dd>
+          </div>
+          <div>
+            <dt>Is Pi Gamma Omicron active today?</dt>
+            <dd>Yes. The fraternity entered a formal renewal in 2023 and is preserving its history while rebuilding chapters and national operations.</dd>
+          </div>
+        </dl>
       </section>
 
       <section className="mission-section" aria-labelledby="mission-title">

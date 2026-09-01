@@ -1,16 +1,23 @@
 import { publicUpdates } from "../../lib/site-content";
+import { createPageMetadata, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
-export const metadata = {
-  title: "News & Events",
-  description:
-    "Official public announcements, revival updates, and event information from Pi Gamma Omicron Fraternity.",
-};
+const description =
+  "Official Pi Gamma Omicron news, chapter updates, historical preservation work, and information about the 2027 National Conference in Charlotte, North Carolina.";
+
+export const metadata = createPageMetadata({
+  title: "News, Events & 2027 National Conference",
+  description,
+  path: "/news",
+});
 
 export default function NewsPage() {
   return (
     <main className="interior interior--dark">
       <SiteHeader />
+      <Breadcrumbs current="News & Events" path="/news" tone="dark" />
+      <JsonLd data={webPageJsonLd({ path: "/news", title: "Pi Gamma Omicron News & Events", description, type: "CollectionPage" })} />
       <section className="conference-hero" id="charlotte-2027" aria-labelledby="conference-title">
         <div className="conference-hero__year" aria-hidden="true">2027</div>
         <div className="conference-hero__copy">

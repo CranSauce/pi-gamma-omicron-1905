@@ -1,26 +1,23 @@
+import { createPageMetadata, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { InterestForm } from "./InterestForm";
 
-export const metadata = {
-  title: "Express Interest",
-  description:
-    "Express interest in membership, a current chapter, or future expansion of Pi Gamma Omicron Fraternity.",
-  openGraph: {
-    title: "Become Part of the Legacy | Pi Gamma Omicron",
-    description: "Express interest in membership or future chapter expansion.",
-    images: [],
-  },
-  twitter: {
-    title: "Become Part of the Legacy | Pi Gamma Omicron",
-    description: "Express interest in membership or future chapter expansion.",
-    images: [],
-  },
-};
+const description =
+  "Express interest in Pi Gamma Omicron collegiate or alumni membership, an active chapter, campus expansion, or chapter reactivation.";
+
+export const metadata = createPageMetadata({
+  title: "Express Membership or Chapter Interest",
+  description,
+  path: "/join",
+});
 
 export default function JoinPage() {
   return (
     <main className="interior interior--paper">
       <SiteHeader tone="light" />
+      <Breadcrumbs current="Express Interest" path="/join" />
+      <JsonLd data={webPageJsonLd({ path: "/join", title: "Express Interest in Pi Gamma Omicron", description })} />
       <section className="interior-hero interior-hero--join">
         <p className="section-label">Membership & expansion interest</p>
         <h1>Become part<br />of the legacy.</h1>

@@ -1,15 +1,35 @@
 import { leadership } from "../../lib/site-content";
+import { absoluteUrl, createPageMetadata, organizationId, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
-export const metadata = {
-  title: "Leadership",
-  description: "Meet the national officers stewarding the renewal of Pi Gamma Omicron Fraternity.",
+const description =
+  "Meet President Zeke Lipscomb, Vice President Kawame Curry, and the national leadership stewarding the renewal of Pi Gamma Omicron Fraternity.";
+
+export const metadata = createPageMetadata({
+  title: "National Leadership",
+  description,
+  path: "/leadership",
+});
+
+const leadershipPage = {
+  ...webPageJsonLd({ path: "/leadership", title: "Pi Gamma Omicron National Leadership", description, type: "AboutPage" }),
+  mainEntity: leadership.map((officer) => ({
+    "@type": "Person",
+    "@id": `${absoluteUrl("/leadership")}#${officer.name.toLowerCase().replace(/\s+/g, "-")}`,
+    name: officer.name,
+    jobTitle: officer.role,
+    description: officer.statement,
+    worksFor: { "@id": organizationId },
+  })),
 };
 
 export default function LeadershipPage() {
   return (
     <main className="interior interior--paper">
       <SiteHeader tone="light" />
+      <Breadcrumbs current="Leadership" path="/leadership" />
+      <JsonLd data={leadershipPage} />
       <section className="interior-hero interior-hero--leadership">
         <p className="section-label">National leadership</p>
         <h1>Stewarding the renewal.</h1>

@@ -164,3 +164,60 @@ test("uses a private Supabase boundary for production portal data", async () => 
   assert.match(interestRoute, /createInterest/);
   assert.doesNotMatch(interestRoute, /getDb|cloudflare:workers/);
 });
+
+test("publishes a canonical, machine-readable search and answer-engine layer", async () => {
+  const [homeResponse, historyResponse, membersResponse, robotsResponse, sitemapResponse, manifestResponse, feedResponse, llmsResponse] = await Promise.all([
+    render("/"),
+    render("/history"),
+    render("/members"),
+    render("/robots.txt"),
+    render("/sitemap.xml"),
+    render("/manifest.webmanifest"),
+    render("/feed.xml"),
+    render("/llms.txt"),
+  ]);
+
+  const [home, history, members, robots, sitemap, manifest, feed, llms] = await Promise.all([
+    homeResponse.text(),
+    historyResponse.text(),
+    membersResponse.text(),
+    robotsResponse.text(),
+    sitemapResponse.text(),
+    manifestResponse.text(),
+    feedResponse.text(),
+    llmsResponse.text(),
+  ]);
+
+  assert.match(home, /<link rel="canonical" href="https:\/\/pgo1905\.com"\s*\/?>/);
+  assert.match(home, /Pi Gamma Omicron at a glance/);
+  assert.match(home, /application\/ld\+json/);
+  assert.match(home, /"@type":"Organization"/);
+  assert.match(home, /"@type":"WebSite"/);
+  assert.match(history, /<link rel="canonical" href="https:\/\/pgo1905\.com\/history"\s*\/?>/);
+  assert.match(history, /Ohio State University Archives/);
+  assert.match(history, /among the earliest documented Black collegiate fraternities/);
+  assert.match(history, /"citation":\["https:\/\/library\.osu\.edu/);
+  assert.match(members, /<meta name="robots" content="noindex, nofollow"\s*\/?>/);
+  assert.doesNotMatch(members, /rel="canonical"/);
+
+  for (const html of [home, history]) {
+    const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
+    assert.ok(blocks.length > 0);
+    for (const [, json] of blocks) assert.doesNotThrow(() => JSON.parse(json));
+  }
+
+  assert.equal(robotsResponse.status, 200);
+  assert.match(robots, /Sitemap: https:\/\/pgo1905\.com\/sitemap\.xml/);
+  assert.match(robots, /Disallow: \/api\//);
+  assert.doesNotMatch(robots, /Disallow: \/members/);
+  assert.equal(sitemapResponse.headers.get("content-type"), "application/xml");
+  assert.match(sitemap, /<loc>https:\/\/pgo1905\.com\/history<\/loc>/);
+  assert.match(sitemap, /<loc>https:\/\/pgo1905\.com\/join<\/loc>/);
+  assert.doesNotMatch(sitemap, /<loc>[^<]*\/(?:members(?:\/|<)|privacy(?:\/|<)|api\/)/);
+  assert.match(manifestResponse.headers.get("content-type") ?? "", /^application\/manifest\+json/);
+  assert.equal(JSON.parse(manifest).short_name, "ΠΓΟ");
+  assert.match(feedResponse.headers.get("content-type") ?? "", /^application\/rss\+xml/);
+  assert.match(feed, /Pi Gamma Omicron Fraternity News &amp; Events/);
+  assert.match(llms, /Canonical website: https:\/\/pgo1905\.com/);
+  assert.match(llms, /Protected members-only content is private/);
+});

@@ -1,27 +1,40 @@
 /* eslint-disable @next/next/no-img-element */
 import { founders, timeline } from "../../lib/site-content";
+import { absoluteUrl, createPageMetadata, organizationId, webPageJsonLd } from "../../lib/seo";
+import { Breadcrumbs, JsonLd } from "../components/Seo";
 import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 
-export const metadata = {
-  title: "History & Archive",
-  description:
-    "Explore the source-aware history, founding members, surviving press record, archival gaps, and renewal of Pi Gamma Omicron Fraternity.",
-  openGraph: {
-    title: "History & Archive | Pi Gamma Omicron",
-    description: "The surviving record of Pi Gamma Omicron, from 1905 to the present renewal.",
-    images: [],
-  },
-  twitter: {
-    title: "History & Archive | Pi Gamma Omicron",
-    description: "The surviving record of Pi Gamma Omicron, from 1905 to the present renewal.",
-    images: [],
-  },
+const description =
+  "Explore the documented history of Pi Gamma Omicron, founded by eleven Black students at Ohio State in 1905, through archival research, newspaper records, and the modern revival.";
+
+export const metadata = createPageMetadata({
+  title: "History, Founders & Black Collegiate Fraternity Archive",
+  description,
+  path: "/history",
+  type: "article",
+});
+
+const historyArticle = {
+  ...webPageJsonLd({
+    path: "/history",
+    title: "Pi Gamma Omicron History, Founders & Archive",
+    description,
+    type: "Article",
+  }),
+  image: absoluteUrl("/assets/archive/press-january-4-1906.png"),
+  author: { "@id": organizationId },
+  citation: [
+    "https://library.osu.edu/site/archives/2012/03/28/tracking-the-early-history-of-african-american-fraternities-at-osu/",
+    "https://library.osu.edu/documents/university-archives/pi_gamma_omicron_members.pdf",
+  ],
 };
 
 export default function HistoryPage() {
   return (
     <main className="interior interior--paper">
       <SiteHeader tone="light" />
+      <Breadcrumbs current="History" path="/history" />
+      <JsonLd data={historyArticle} />
       <section className="interior-hero interior-hero--history">
         <p className="section-label">History & archive</p>
         <h1>A history recovered<br />from the quiet.</h1>
@@ -43,6 +56,25 @@ export default function HistoryPage() {
           <p>
             The historical archive remains incomplete. This site distinguishes fraternity-approved history from contemporary evidence and from questions that still require research. Where the record is silent, we say so.
           </p>
+        </div>
+      </section>
+
+      <section className="historical-context" aria-labelledby="historical-context-title">
+        <div>
+          <p className="section-label">Black collegiate fraternity history</p>
+          <h2 id="historical-context-title">An early institution, independently documented.</h2>
+        </div>
+        <div>
+          <p>
+            Ohio State University Archives reports that its staff located a January 10, 1906 issue of <em>The Lantern</em> announcing Pi Gamma Omicron and naming its founders. That independent record supports ΠΓΟ’s place among the earliest documented Black collegiate fraternities in the United States.
+          </p>
+          <p>
+            The wording is deliberate: the surviving evidence establishes historical significance, while an incomplete archive does not justify claims beyond what the record can prove. Historical origin at Ohio State does not imply present-day university sponsorship, recognition, or endorsement.
+          </p>
+          <div className="historical-context__links">
+            <a className="text-link" href="https://library.osu.edu/site/archives/2012/03/28/tracking-the-early-history-of-african-american-fraternities-at-osu/">Read the Ohio State University Archives account <span aria-hidden="true">↗</span></a>
+            <a className="text-link" href="https://library.osu.edu/documents/university-archives/pi_gamma_omicron_members.pdf">Review the OSU Archives founder research <span aria-hidden="true">↗</span></a>
+          </div>
         </div>
       </section>
 
