@@ -146,6 +146,7 @@ export default function HistoryPage() {
             <li key={founder}><span>{String(index + 1).padStart(2, "0")}</span><strong>{founder}</strong></li>
           ))}
         </ol>
+        <a className="text-link founders-archive__link" href="/founders">Read the founder research <span aria-hidden="true">↗</span></a>
       </section>
 
       <section className="source-policy">

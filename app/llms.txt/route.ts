@@ -14,6 +14,7 @@ Canonical website: ${siteUrl}
 - [Home](${absoluteUrl("/")}): Official identity, mission, founding facts, chapters, and current renewal.
 - [About](${absoluteUrl("/about")}): Mission, motto, principles, purpose, and public identity.
 - [History and archive](${absoluteUrl("/history")}): Source-aware founding history, the eleven founders, archival newspaper records, and historical-method policy.
+- [The eleven founders](${absoluteUrl("/founders")}): Source-aware founder profiles based on Ohio State student directory and yearbook research.
 - [Leadership](${absoluteUrl("/leadership")}): Current national officers and public leadership structure.
 - [Chapters and expansion](${absoluteUrl("/chapters")}): Alpha Chapter, Beta Chapter, historical expansion record, and chapter-interest path.
 - [Membership](${absoluteUrl("/membership")}): Public membership paths, expectations, and process.

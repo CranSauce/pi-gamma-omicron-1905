@@ -155,6 +155,7 @@ export default function Home() {
             <li key={founder}><span>{String(index + 1).padStart(2, "0")}</span>{founder}</li>
           ))}
         </ol>
+        <a className="text-link founders-section__link" href="/founders">Meet the eleven founders <span aria-hidden="true">↗</span></a>
       </section>
 
       <section className="chapters-section" aria-labelledby="chapters-title">

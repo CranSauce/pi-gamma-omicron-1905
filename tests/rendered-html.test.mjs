@@ -70,6 +70,7 @@ test("keeps every public and protected portal destination routed", async () => {
     "/",
     "/about",
     "/history",
+    "/founders",
     "/leadership",
     "/chapters",
     "/membership",
@@ -212,6 +213,7 @@ test("publishes a canonical, machine-readable search and answer-engine layer", a
   assert.doesNotMatch(robots, /Disallow: \/members/);
   assert.equal(sitemapResponse.headers.get("content-type"), "application/xml");
   assert.match(sitemap, /<loc>https:\/\/www\.pgo1905\.com\/history<\/loc>/);
+  assert.match(sitemap, /<loc>https:\/\/www\.pgo1905\.com\/founders<\/loc>/);
   assert.match(sitemap, /<loc>https:\/\/www\.pgo1905\.com\/join<\/loc>/);
   assert.doesNotMatch(sitemap, /<loc>[^<]*\/(?:members(?:\/|<)|privacy(?:\/|<)|api\/)/);
   assert.match(manifestResponse.headers.get("content-type") ?? "", /^application\/manifest\+json/);
@@ -220,4 +222,18 @@ test("publishes a canonical, machine-readable search and answer-engine layer", a
   assert.match(feed, /Pi Gamma Omicron Fraternity News &amp; Events/);
   assert.match(llms, /Canonical website: https:\/\/www\.pgo1905\.com/);
   assert.match(llms, /Protected members-only content is private/);
+});
+
+test("publishes the eleven founders as a source-aware entity collection", async () => {
+  const response = await render("/founders");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+
+  assert.match(html, /The eleven who/);
+  assert.match(html, /Leroy Barnett/);
+  assert.match(html, /Elmer Shackelford/);
+  assert.match(html, /first African American to earn its then-equivalent certificate of law/);
+  assert.match(html, /Ohio State Archives research sheet/);
+  assert.match(html, /"numberOfItems":11/);
+  assert.match(html, /"@type":"Person"/);
 });

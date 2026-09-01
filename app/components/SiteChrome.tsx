@@ -23,6 +23,7 @@ export function SiteHeader({ tone = "dark" }: { tone?: "dark" | "light" }) {
         <nav aria-label="Mobile navigation">
           <a href="/about">About</a>
           <a href="/history">History</a>
+          <a href="/founders">Founders</a>
           <a href="/leadership">Leadership</a>
           <a href="/chapters">Chapters</a>
           <a href="/membership">Membership</a>
@@ -53,6 +54,7 @@ export function SiteFooter() {
         <nav aria-label="Footer navigation">
           <a href="/about">About</a>
           <a href="/history">History</a>
+          <a href="/founders">Founders</a>
           <a href="/leadership">Leadership</a>
           <a href="/chapters">Chapters</a>
           <a href="/membership">Membership</a>
